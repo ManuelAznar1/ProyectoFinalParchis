@@ -1,0 +1,47 @@
+/* src/Partida.css */
+
+.partida-container {
+  text-align: center;
+  margin: 20px;
+}
+
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(15, 30px);
+  grid-template-rows: repeat(15, 30px);
+  gap: 2px;
+  justify-content: center;
+  margin: 0 auto;
+  background-color: #eee;
+  padding: 10px;
+  border: 3px solid #333;
+  width: fit-content;
+}
+
+.casilla {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #999;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.rojo {
+  background-color: #ff4d4d;
+}
+
+.verde {
+  background-color: #4dff4d;
+}
+
+.amarillo {
+  background-color: #ffff4d;
+}
+
+.azul {
+  background-color: #4d4dff;
+}
+
+.normal {
+  background-color: #fff8dc; /* beige claro */
+}

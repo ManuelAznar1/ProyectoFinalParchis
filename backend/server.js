@@ -49,7 +49,9 @@ app.post('/crear-usuario', (req, res) => {
         console.error('Error al insertar el usuario:', err);
         return res.status(500).json({ error: 'Error al crear el usuario' });
       }
-      res.status(201).json({ mensaje: 'Usuario creado con éxito' });
+      // Generar un token y devolver también el nombre
+      const token = jwt.sign({ id: result.insertId, nombre }, 'secreta', { expiresIn: '1h' });
+      res.status(201).json({ mensaje: 'Usuario creado con éxito', token, nombre });
     });
   });
 });
@@ -88,8 +90,8 @@ app.post('/iniciar-sesion', (req, res) => {
       // Generar un token JWT para el usuario
       const token = jwt.sign({ id: result[0].id, nombre: result[0].nombre }, 'secreta', { expiresIn: '1h' });
       
-      // Enviar el token en la respuesta
-      res.json({ mensaje: 'Inicio de sesión exitoso', token });
+      // Enviar el token Y el nombre en la respuesta
+      res.json({ mensaje: 'Inicio de sesión exitoso', token, nombre: result[0].nombre });
     });
   });
 });

@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
@@ -23,8 +22,10 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Respuesta del backend (registro):', data);
         if (data.token) {
           setToken(data.token);
+          localStorage.setItem('usuarioNombre', data.nombre);
           setMensaje('Registro exitoso');
         } else {
           setMensaje(data.mensaje || 'Error al registrar');
@@ -48,8 +49,10 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Respuesta del backend (login):', data);
         if (data.token) {
           setToken(data.token);
+          localStorage.setItem('usuarioNombre', data.nombre);
           setMensaje('Inicio de sesión exitoso');
         } else {
           setMensaje(data.error || 'Credenciales incorrectas');
@@ -63,7 +66,14 @@ function App() {
   };
 
   if (token) {
-    return <PantallaInicial onLogout={() => setToken(null)} />;
+    return (
+      <PantallaInicial
+        onLogout={() => {
+          setToken(null);
+          localStorage.removeItem('usuarioNombre');
+        }}
+      />
+    );
   }
 
   return (
@@ -76,8 +86,24 @@ function App() {
           <h2>Parchis</h2>
         </div>
         <div className="nav-right">
-          <button className="custom-button" onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); }}>Registrarse</button>
-          <button className="custom-button" onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); }}>Iniciar Sesión</button>
+          <button
+            className="custom-button"
+            onClick={() => {
+              setMostrarRegistro(true);
+              setMostrarLogin(false);
+            }}
+          >
+            Registrarse
+          </button>
+          <button
+            className="custom-button"
+            onClick={() => {
+              setMostrarLogin(true);
+              setMostrarRegistro(false);
+            }}
+          >
+            Iniciar Sesión
+          </button>
         </div>
       </nav>
 
@@ -103,7 +129,9 @@ function App() {
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
             />
-            <button className="custom-button" onClick={registrarUsuario}>Registrar</button>
+            <button className="custom-button" onClick={registrarUsuario}>
+              Registrar
+            </button>
           </div>
         )}
 
@@ -122,9 +150,12 @@ function App() {
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
             />
-            <button className="custom-button" onClick={iniciarSesion}>Iniciar Sesión</button>
+            <button className="custom-button" onClick={iniciarSesion}>
+              Iniciar Sesión
+            </button>
           </div>
         )}
+
         <p>{mensaje}</p>
       </div>
     </div>
