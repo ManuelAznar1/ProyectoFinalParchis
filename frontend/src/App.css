@@ -111,15 +111,18 @@ input {
 
 /* Botones con color pastel claro */
 .custom-button {
+  width: 100%; /* Asegura que todos los botones tengan el mismo ancho */
+  margin: 10px 0; /* Espaciado entre los botones */
+  padding: 12px 24px;
   background-color: #e0f2f1; /* Verde azulado muy claro */
   color: #00695c; /* Verde oscuro para contraste */
-  padding: 12px 24px;
   border: 2px solid #b2dfdb;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   font-size: 16px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .custom-button:hover {
@@ -129,14 +132,6 @@ input {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Mensajes */
-p {
-  font-size: 16px;
-  margin-top: 20px;
-  color: #00796b;
-}
-
-/* Barra de navegación */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -155,23 +150,32 @@ p {
 }
 
 .nav-left {
-  flex: 1;
+  flex: 1; /* Ocupa un tercio */
 }
 
 .nav-center {
-  flex: 1;
+  flex: 1; /* Ocupa un tercio */
   justify-content: center;
 }
 
 .nav-right {
   flex: 1;
   justify-content: flex-end;
+  display: flex;
+  align-items: center;
+}
+
+.nav-right .custom-button {
+  margin-right: 0;
+  margin-left: auto;
+  width: auto; /* Opcional: para que no ocupe todo el ancho */
 }
 
 .navbar h2 {
-  margin: 0 auto;
+  margin: 0;
   font-size: 24px;
   font-weight: bold;
+  text-align: center;
 }
 
 .logo {
@@ -188,3 +192,64 @@ p {
   box-shadow: 0 0 15px rgba(0,0,0,0.1);
   text-align: center;
 }
+
+/* Ajustes generales de los botones */
+.custom-button {
+  width: 200px; /* Establece un ancho fijo de 200px para todos los botones */
+  margin: 15px auto;
+  padding: 12px 24px;
+  background-color: #4dd0e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.custom-button:hover {
+  background-color: #26c6da;
+}
+
+/* Para alinear el botón "Perfil" y "Opciones" en la misma línea */
+.profile-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Espaciado entre los botones de Perfil y Opciones */
+  margin-top: 15px;
+}
+
+/* Personalización para el botón "Salir" */
+.custom-button {
+  display: block;
+  margin: 15px auto;
+  background-color: #e0f2f1; /* Verde azulado muy claro */
+  color: #00695c; /* Verde oscuro para contraste */
+  padding: 12px 24px;
+  border: 2px solid #b2dfdb;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #b2dfdb; /* Un poco más fuerte al pasar el mouse */
+  color: #004d40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de formulario */
+.form-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+

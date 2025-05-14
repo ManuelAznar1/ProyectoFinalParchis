@@ -1,15 +1,17 @@
+// src/App.js
 import React, { useState } from 'react';
 import './App.css';
-import logo from './logoParchis.png'; // Asegúrate de tener un archivo logo.png en src/
+import logo from './logoParchis.png';
+import PantallaInicial from './pantallaInicial';
 
 function App() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(null);
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
-  const [mostrarLogin, setMostrarLogin] = useState(true); // Mostrar login por defecto
+  const [mostrarLogin, setMostrarLogin] = useState(true);
 
   const registrarUsuario = () => {
     const usuario = { nombre, email, contrasena };
@@ -21,7 +23,12 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setMensaje(data.mensaje);
+        if (data.token) {
+          setToken(data.token);
+          setMensaje('Registro exitoso');
+        } else {
+          setMensaje(data.mensaje || 'Error al registrar');
+        }
         setNombre('');
         setEmail('');
         setContrasena('');
@@ -42,18 +49,22 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         if (data.token) {
-          setMensaje('Inicio de sesión exitoso');
           setToken(data.token);
-          setEmail('');
-          setContrasena('');
+          setMensaje('Inicio de sesión exitoso');
         } else {
-          setMensaje(data.error);
+          setMensaje(data.error || 'Credenciales incorrectas');
         }
+        setEmail('');
+        setContrasena('');
       })
       .catch(() => {
         setMensaje('Error al iniciar sesión');
       });
   };
+
+  if (token) {
+    return <PantallaInicial onLogout={() => setToken(null)} />;
+  }
 
   return (
     <div>
@@ -114,7 +125,6 @@ function App() {
             <button className="custom-button" onClick={iniciarSesion}>Iniciar Sesión</button>
           </div>
         )}
-
         <p>{mensaje}</p>
       </div>
     </div>
@@ -122,4 +132,3 @@ function App() {
 }
 
 export default App;
-
