@@ -36,3 +36,155 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilo general del fondo */
+body {
+  background: linear-gradient(135deg, #e0f7fa);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor de todo */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Barra superior con botones alineados a la derecha */
+.top-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Botones superiores */
+.top-buttons button {
+  background-color: #00bcd4;
+  color: white;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.top-buttons button:hover {
+  background-color: #00838f;
+}
+
+/* Contenedor del formulario centrado */
+.form-box {
+  max-width: 400px;
+  width: 90%;
+  margin-top: 60px;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* Títulos */
+h1 {
+  color: #00796b;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #b2ebf2;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Botones con color pastel claro */
+.custom-button {
+  background-color: #e0f2f1; /* Verde azulado muy claro */
+  color: #00695c; /* Verde oscuro para contraste */
+  padding: 12px 24px;
+  border: 2px solid #b2dfdb;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #b2dfdb; /* Un poco más fuerte al pasar el mouse */
+  color: #004d40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensajes */
+p {
+  font-size: 16px;
+  margin-top: 20px;
+  color: #00796b;
+}
+
+/* Barra de navegación */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #00bcd4;
+  padding: 10px 20px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-left,
+.nav-center,
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  flex: 1;
+}
+
+.nav-center {
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-right {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.navbar h2 {
+  margin: 0 auto;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo {
+  height: 80px;
+}
+
+/* Contenedor del formulario */
+.form-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  text-align: center;
+}

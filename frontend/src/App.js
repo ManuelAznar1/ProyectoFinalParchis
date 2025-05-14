@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
+import './App.css';
+import logo from './logoParchis.png'; // Asegúrate de tener un archivo logo.png en src/
 
 function App() {
-  // Estados para el formulario
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [token, setToken] = useState('');
-
-  // Estado para cambiar entre formulario de Registro e Inicio de sesión
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
-  const [mostrarLogin, setMostrarLogin] = useState(false);
+  const [mostrarLogin, setMostrarLogin] = useState(true); // Mostrar login por defecto
 
-  // Función para registrar un nuevo usuario
   const registrarUsuario = () => {
     const usuario = { nombre, email, contrasena };
 
@@ -24,13 +22,15 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setMensaje(data.mensaje);
+        setNombre('');
+        setEmail('');
+        setContrasena('');
       })
-      .catch((error) => {
+      .catch(() => {
         setMensaje('Error al crear el usuario');
       });
   };
 
-  // Función para iniciar sesión
   const iniciarSesion = () => {
     const usuario = { email, contrasena };
 
@@ -44,72 +44,82 @@ function App() {
         if (data.token) {
           setMensaje('Inicio de sesión exitoso');
           setToken(data.token);
+          setEmail('');
+          setContrasena('');
         } else {
           setMensaje(data.error);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setMensaje('Error al iniciar sesión');
       });
   };
 
   return (
     <div>
-      {/* Botones para cambiar entre formularios */}
-      <button onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); }}>Crear Usuario</button>
-      <button onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); }}>Iniciar Sesión</button>
-
-      {/* Mostrar el formulario de Registro si se presionó "Crear Usuario" */}
-      {mostrarRegistro && (
-        <div>
-          <h1>Registro de Usuario</h1>
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-          />
-          <button onClick={registrarUsuario}>Registrar</button>
+      <nav className="navbar">
+        <div className="nav-left">
+          <img src={logo} alt="Logo" className="logo" />
         </div>
-      )}
-
-      {/* Mostrar el formulario de Login si se presionó "Iniciar Sesión" */}
-      {mostrarLogin && (
-        <div>
-          <h1>Iniciar Sesión</h1>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-          />
-          <button onClick={iniciarSesion}>Iniciar Sesión</button>
+        <div className="nav-center">
+          <h2>Parchis</h2>
         </div>
-      )}
+        <div className="nav-right">
+          <button className="custom-button" onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); }}>Registrarse</button>
+          <button className="custom-button" onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); }}>Iniciar Sesión</button>
+        </div>
+      </nav>
 
-      {/* Mostrar el mensaje que retorna el backend */}
-      <p>{mensaje}</p>
+      <div className="form-container">
+        {mostrarRegistro && (
+          <div>
+            <h1>Registro de Usuario</h1>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+            />
+            <button className="custom-button" onClick={registrarUsuario}>Registrar</button>
+          </div>
+        )}
 
+        {mostrarLogin && (
+          <div>
+            <h1>Iniciar Sesión</h1>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+            />
+            <button className="custom-button" onClick={iniciarSesion}>Iniciar Sesión</button>
+          </div>
+        )}
+
+        <p>{mensaje}</p>
+      </div>
     </div>
   );
 }
 
 export default App;
+
