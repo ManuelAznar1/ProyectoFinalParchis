@@ -1,24 +1,24 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const bcrypt = require('bcrypt'); // Para encriptar las contraseñas
-const jwt = require('jsonwebtoken'); // Para crear tokens de sesión (JWT)
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const LogicaPartida = require('./logicaPartida'); // Asegúrate de que esté en el mismo directorio que server.js
+
 const app = express();
 const PORT = 3001;
 
-// Middleware para manejar el cuerpo de las solicitudes (como JSON)
 app.use(express.json());
 app.use(cors());
 
-// Crear conexión con la base de datos MySQL
+// Conexión a la base de datos
 const db = mysql.createConnection({
-  host: 'localhost',      // O la IP donde esté tu base de datos
-  user: 'root',           // Tu usuario de MySQL (por defecto es 'root')
-  password: '',           // La contraseña de tu base de datos (déjala vacía si no tiene)
-  database: 'parchis'     // Nombre de tu base de datos
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'parchis'
 });
 
-// Conectar a la base de datos
 db.connect((err) => {
   if (err) {
     console.error('Error al conectar a la base de datos:', err);
@@ -27,76 +27,121 @@ db.connect((err) => {
   console.log('Conectado a la base de datos MySQL');
 });
 
-// Ruta para crear un nuevo usuario (registro)
+// =======================
+// RUTAS DE AUTENTICACIÓN
+// =======================
+
 app.post('/crear-usuario', (req, res) => {
   const { nombre, email, contrasena } = req.body;
 
-  // Verificar si todos los campos están presentes
   if (!nombre || !email || !contrasena) {
     return res.status(400).json({ error: 'Todos los campos son requeridos.' });
   }
 
-  // Encriptar la contraseña
   bcrypt.hash(contrasena, 10, (err, hashedPassword) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error al encriptar la contraseña' });
-    }
+    if (err) return res.status(500).json({ error: 'Error al encriptar la contraseña' });
 
-    // Insertar el usuario en la base de datos
     const query = 'INSERT INTO usuarios (nombre, email, contrasena) VALUES (?, ?, ?)';
     db.query(query, [nombre, email, hashedPassword], (err, result) => {
       if (err) {
         console.error('Error al insertar el usuario:', err);
         return res.status(500).json({ error: 'Error al crear el usuario' });
       }
-      // Generar un token y devolver también el nombre
-      const token = jwt.sign({ id: result.insertId, nombre }, 'secreta', { expiresIn: '1h' });
-      res.status(201).json({ mensaje: 'Usuario creado con éxito', token, nombre });
+
+      // Obtener la fecha de registro recién insertada con alias
+      db.query('SELECT fecha_registro AS fechaRegistro FROM usuarios WHERE id = ?', [result.insertId], (err2, result2) => {
+        if (err2) {
+          console.error('Error al obtener fecha_registro:', err2);
+          return res.status(500).json({ error: 'Error al obtener la fecha de registro' });
+        }
+
+        console.log('Resultado consulta fecha_registro:', result2); // LOG para depurar
+
+        const fechaRegistro = result2 && result2[0] ? result2[0].fechaRegistro : null;
+        console.log('Fecha de registro seleccionada:', fechaRegistro);  // LOG para depurar
+
+        const token = jwt.sign({ id: result.insertId, nombre }, 'secreta', { expiresIn: '1h' });
+        res.status(201).json({ mensaje: 'Usuario creado con éxito', token, nombre, fechaRegistro });
+      });
     });
   });
 });
 
-// Ruta para iniciar sesión (login)
 app.post('/iniciar-sesion', (req, res) => {
   const { email, contrasena } = req.body;
 
-  // Verificar si los datos son válidos
   if (!email || !contrasena) {
     return res.status(400).json({ error: 'Email y contraseña son requeridos' });
   }
 
-  // Buscar el usuario en la base de datos
-  const query = 'SELECT * FROM usuarios WHERE email = ?';
+  const query = 'SELECT id, nombre, email, contrasena, fecha_registro AS fechaRegistro FROM usuarios WHERE email = ?';
   db.query(query, [email], (err, result) => {
     if (err) {
       console.error('Error al buscar el usuario:', err);
       return res.status(500).json({ error: 'Error al buscar el usuario' });
     }
 
+    console.log('Resultado consulta usuario:', result); // LOG para depurar
+
     if (result.length === 0) {
       return res.status(401).json({ error: 'Usuario no encontrado' });
     }
 
-    // Comparar la contraseña ingresada con la almacenada (hash)
     bcrypt.compare(contrasena, result[0].contrasena, (err, isMatch) => {
-      if (err) {
-        return res.status(500).json({ error: 'Error al verificar la contraseña' });
-      }
+      if (err) return res.status(500).json({ error: 'Error al verificar la contraseña' });
 
       if (!isMatch) {
         return res.status(401).json({ error: 'Contraseña incorrecta' });
       }
 
-      // Generar un token JWT para el usuario
+      console.log('Fecha de registro en login:', result[0].fechaRegistro);  // LOG para depurar
+
       const token = jwt.sign({ id: result[0].id, nombre: result[0].nombre }, 'secreta', { expiresIn: '1h' });
-      
-      // Enviar el token Y el nombre en la respuesta
-      res.json({ mensaje: 'Inicio de sesión exitoso', token, nombre: result[0].nombre });
+      res.json({
+        mensaje: 'Inicio de sesión exitoso',
+        token,
+        nombre: result[0].nombre,
+        fechaRegistro: result[0].fechaRegistro ? new Date(result[0].fechaRegistro).toISOString() : null
+      });
     });
   });
 });
 
-// Iniciar el servidor
+// =======================
+// LÓGICA DEL JUEGO PARCHÍS
+// =======================
+
+const juego = new LogicaPartida(); // Instancia única de la partida
+
+// Obtener estado actual del juego
+app.get('/estado', (req, res) => {
+  const estado = juego.obtenerEstado();
+  res.json(estado);
+});
+
+// Tirar el dado
+app.post('/tirar-dado', (req, res) => {
+  const resultado = juego.tirarDado();
+  const estado = juego.obtenerEstado();
+  res.json({ resultado, estado });
+});
+
+// Mover ficha
+app.post('/mover-ficha', (req, res) => {
+  const { color, index } = req.body;
+
+  if (!color || index === undefined) {
+    return res.status(400).json({ error: 'Color e índice son requeridos' });
+  }
+
+  const mensaje = juego.moverFicha(color, index);
+  const estado = juego.obtenerEstado();
+  res.json({ mensaje, estado });
+});
+
+// =======================
+// INICIAR SERVIDOR
+// =======================
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

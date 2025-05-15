@@ -253,3 +253,45 @@ input {
   text-align: center;
 }
 
+/* Modo oscuro */
+body.modo-oscuro {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.modo-oscuro .navbar {
+  background-color: #1f1f1f;
+  color: #ddd;
+}
+
+body.modo-oscuro .custom-button {
+  background-color: #3a3a3a;
+  color: #ddd;
+}
+
+body.modo-oscuro .custom-button:hover {
+  background-color: #575757;
+}
+
+body.modo-oscuro .form-container {
+  background-color: #1e1e1e;
+  color: white; /* Texto blanco dentro del contenedor */
+}
+
+body.modo-oscuro .form-container h1,
+body.modo-oscuro .form-container h2,
+body.modo-oscuro .form-container p {
+  color: white;
+}
+
+body.modo-oscuro .form-box {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.modo-oscuro .form-box h1,
+body.modo-oscuro .form-box h2,
+body.modo-oscuro .form-box p,
+body.modo-oscuro .form-box strong {
+  color: white;
+}

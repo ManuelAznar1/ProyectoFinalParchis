@@ -1,53 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
 import CrearPartida from './crearPartida';
 import UnirsePartida from './unirsePartida';
 import Partida from './partida';
+import Perfil from './perfil';
 
-function PantallaInicial({ onLogout }) {
-  const [vista, setVista] = useState('menu'); // 'menu', 'crear', 'unirse', 'partida'
+function PantallaInicial({ onLogout, usuario }) {
+  const [vista, setVista] = useState('menu');
+  const [modoOscuro, setModoOscuro] = useState(false);
+
+  // Aplicar o quitar clase en <body> para modo oscuro
+  useEffect(() => {
+    if (modoOscuro) {
+      document.body.classList.add('modo-oscuro');
+    } else {
+      document.body.classList.remove('modo-oscuro');
+    }
+  }, [modoOscuro]);
+
+  const toggleModoOscuro = () => {
+    setModoOscuro(prev => !prev);
+  };
 
   const volverMenu = () => setVista('menu');
+
+  const Navbar = () => (
+    <nav className="navbar">
+      <div className="nav-left">
+        <img src={logo} alt="Logo" className="logo" />
+      </div>
+      <div className="nav-center">
+        <h2>Parchis</h2>
+      </div>
+      <div className="nav-right">
+        <button className="custom-button" onClick={onLogout}>Salir</button>
+      </div>
+    </nav>
+  );
 
   if (vista === 'crear') {
     return (
       <div>
-        <nav className="navbar">
-          <div className="nav-left">
-            <img src={logo} alt="Logo" className="logo" />
-          </div>
-          <div className="nav-center">
-            <h2>Parchis</h2>
-          </div>
-          <div className="nav-right">
-            <button className="custom-button" onClick={onLogout}>Salir</button>
-          </div>
-        </nav>
-
-        {/* Pasa la función para cambiar a la vista 'partida' */}
+        <Navbar />
         <CrearPartida onIniciarPartida={() => setVista('partida')} />
-
-        <button className="custom-button" onClick={volverMenu}>Volver</button>
-      </div>
-    );
-  }
-
-  if (vista === 'partida') {
-    return (
-      <div>
-        <nav className="navbar">
-          <div className="nav-left">
-            <img src={logo} alt="Logo" className="logo" />
-          </div>
-          <div className="nav-center">
-            <h2>Parchis</h2>
-          </div>
-          <div className="nav-right">
-            <button className="custom-button" onClick={onLogout}>Salir</button>
-          </div>
-        </nav>
-        <Partida />
         <button className="custom-button" onClick={volverMenu}>Volver</button>
       </div>
     );
@@ -56,40 +52,53 @@ function PantallaInicial({ onLogout }) {
   if (vista === 'unirse') {
     return (
       <div>
-        <nav className="navbar">
-          <div className="nav-left">
-            <img src={logo} alt="Logo" className="logo" />
-          </div>
-          <div className="nav-center">
-            <h2>Parchis</h2>
-          </div>
-          <div className="nav-right">
-            <button className="custom-button" onClick={onLogout}>Salir</button>
-          </div>
-        </nav>
-
+        <Navbar />
         <UnirsePartida />
-
         <button className="custom-button" onClick={volverMenu}>Volver</button>
       </div>
     );
   }
 
-  // Vista menú principal
+  if (vista === 'partida') {
+    return (
+      <div>
+        <Navbar />
+        <Partida />
+        <button className="custom-button" onClick={volverMenu}>Volver</button>
+      </div>
+    );
+  }
+
+  if (vista === 'perfil') {
+    return (
+      <div>
+        <Navbar />
+        <Perfil usuario={usuario} />
+        <button className="custom-button" onClick={volverMenu}>Volver</button>
+      </div>
+    );
+  }
+
+  if (vista === 'opciones') {
+    return (
+      <div>
+        <Navbar />
+        <div className="form-container">
+          <h1>Opciones</h1>
+          <button className="custom-button">Cambiar Contraseña</button>
+          <button className="custom-button">Idioma</button>
+          <button className="custom-button" onClick={toggleModoOscuro}>
+            {modoOscuro ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
+          </button>
+        </div>
+        <button className="custom-button" onClick={volverMenu}>Volver</button>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <nav className="navbar">
-        <div className="nav-left">
-          <img src={logo} alt="Logo" className="logo" />
-        </div>
-        <div className="nav-center">
-          <h2>Parchis</h2>
-        </div>
-        <div className="nav-right">
-          <button className="custom-button" onClick={onLogout}>Salir</button>
-        </div>
-      </nav>
-
+      <Navbar />
       <div className="form-container">
         <h1>Menú Principal</h1>
 
@@ -97,8 +106,8 @@ function PantallaInicial({ onLogout }) {
         <button className="custom-button" onClick={() => setVista('unirse')}>Unirse a Partida</button>
 
         <div className="profile-options">
-          <button className="custom-button">Perfil</button>
-          <button className="custom-button">Opciones</button>
+          <button className="custom-button" onClick={() => setVista('perfil')}>Perfil</button>
+          <button className="custom-button" onClick={() => setVista('opciones')}>Opciones</button>
         </div>
       </div>
     </div>
