@@ -1,10 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Partida.css';
+import axios from 'axios';
 
 function Partida() {
+  const [dice, setDice] = useState(null);
+  const [rolling, setRolling] = useState(false);
+
+  const rollDice = async () => {
+    setRolling(true);
+    try {
+      const res = await axios.get('http://localhost:3001/roll');
+      setTimeout(() => {
+        setDice(res.data.number);
+        setRolling(false);
+      }, 500); // Simula tiempo de "rodado"
+    } catch (err) {
+      console.error("Error al lanzar el dado:", err);
+      setRolling(false);
+    }
+  };
+
   return (
     <div>
       <h1>Tablero de Parchís</h1>
+
+      {/* --- DADO --- */}
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <button onClick={rollDice} disabled={rolling}>
+          {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
+        </button>
+        {dice && !rolling && (
+          <>
+            <h2>Resultado: {dice}</h2>
+            <img
+              src={`/dice-${dice}.png`}
+              alt={`Dado ${dice}`}
+              style={{ width: '80px', marginTop: '10px' }}
+            />
+          </>
+        )}
+      </div>
+
+      {/* --- TABLERO --- */}
       <table border="1">
         <tbody>
           {/* Fila 1 */}
@@ -145,32 +182,37 @@ function Partida() {
             <td colSpan="2">41</td>
             <td className="rojo" colSpan="7" rowSpan="7"></td>
           </tr>
-          {/* Fila 15 a 20 */}
+          {/* Fila 15 */}
           <tr>
             <td colSpan="2">28</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">40</td>
           </tr>
+          {/* Fila 16 */}
           <tr>
             <td colSpan="2">29</td>
             <td className="rojo" colSpan="2">-</td>
             <td className="rojo" colSpan="2">39</td>
           </tr>
+          {/* Fila 17 */}
           <tr>
             <td colSpan="2">30</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">38</td>
           </tr>
+          {/* Fila 18 */}
           <tr>
             <td colSpan="2">31</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">37</td>
           </tr>
+          {/* Fila 19 */}
           <tr>
             <td colSpan="2">32</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">36</td>
           </tr>
+          {/* Fila 20 */}
           <tr>
             <td colSpan="2">33</td>
             <td colSpan="2">34</td>

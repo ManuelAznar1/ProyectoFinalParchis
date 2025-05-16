@@ -84,7 +84,7 @@ body {
 .form-box {
   max-width: 400px;
   width: 90%;
-  margin-top: 60px;
+  margin: 60px auto; /* Cambia margin-top: 60px a margin vertical auto para centrar horizontalmente */
   padding: 30px;
   background: white;
   border-radius: 15px;

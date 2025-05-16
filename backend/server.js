@@ -3,15 +3,15 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const LogicaPartida = require('./logicaPartida'); // Asegúrate de que esté en el mismo directorio que server.js
-
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
 app.use(cors());
 
-// Conexión a la base de datos
+// =======================
+// CONEXIÓN A BASE DE DATOS
+// =======================
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -48,19 +48,15 @@ app.post('/crear-usuario', (req, res) => {
         return res.status(500).json({ error: 'Error al crear el usuario' });
       }
 
-      // Obtener la fecha de registro recién insertada con alias
       db.query('SELECT fecha_registro AS fechaRegistro FROM usuarios WHERE id = ?', [result.insertId], (err2, result2) => {
         if (err2) {
           console.error('Error al obtener fecha_registro:', err2);
           return res.status(500).json({ error: 'Error al obtener la fecha de registro' });
         }
 
-        console.log('Resultado consulta fecha_registro:', result2); // LOG para depurar
-
         const fechaRegistro = result2 && result2[0] ? result2[0].fechaRegistro : null;
-        console.log('Fecha de registro seleccionada:', fechaRegistro);  // LOG para depurar
-
         const token = jwt.sign({ id: result.insertId, nombre }, 'secreta', { expiresIn: '1h' });
+
         res.status(201).json({ mensaje: 'Usuario creado con éxito', token, nombre, fechaRegistro });
       });
     });
@@ -81,8 +77,6 @@ app.post('/iniciar-sesion', (req, res) => {
       return res.status(500).json({ error: 'Error al buscar el usuario' });
     }
 
-    console.log('Resultado consulta usuario:', result); // LOG para depurar
-
     if (result.length === 0) {
       return res.status(401).json({ error: 'Usuario no encontrado' });
     }
@@ -94,9 +88,8 @@ app.post('/iniciar-sesion', (req, res) => {
         return res.status(401).json({ error: 'Contraseña incorrecta' });
       }
 
-      console.log('Fecha de registro en login:', result[0].fechaRegistro);  // LOG para depurar
-
       const token = jwt.sign({ id: result[0].id, nombre: result[0].nombre }, 'secreta', { expiresIn: '1h' });
+
       res.json({
         mensaje: 'Inicio de sesión exitoso',
         token,
@@ -108,40 +101,19 @@ app.post('/iniciar-sesion', (req, res) => {
 });
 
 // =======================
-// LÓGICA DEL JUEGO PARCHÍS
+// ENDPOINT DEL DADO 🎲
 // =======================
 
-const juego = new LogicaPartida(); // Instancia única de la partida
-
-// Obtener estado actual del juego
-app.get('/estado', (req, res) => {
-  const estado = juego.obtenerEstado();
-  res.json(estado);
-});
-
-// Tirar el dado
-app.post('/tirar-dado', (req, res) => {
-  const resultado = juego.tirarDado();
-  const estado = juego.obtenerEstado();
-  res.json({ resultado, estado });
-});
-
-// Mover ficha
-app.post('/mover-ficha', (req, res) => {
-  const { color, index } = req.body;
-
-  if (!color || index === undefined) {
-    return res.status(400).json({ error: 'Color e índice son requeridos' });
-  }
-
-  const mensaje = juego.moverFicha(color, index);
-  const estado = juego.obtenerEstado();
-  res.json({ mensaje, estado });
+app.get('/roll', (req, res) => {
+  const number = Math.floor(Math.random() * 6) + 1; // 1-6
+  res.json({ number });
 });
 
 // =======================
 // INICIAR SERVIDOR
 // =======================
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+

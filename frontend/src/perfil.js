@@ -14,7 +14,10 @@ function Perfil({ usuario }) {
     : 'Desconocida';
 
   return (
+
     <div className="form-box">
+
+
       <h1>Perfil de Usuario</h1>
       <p>Nombre: <strong>{usuarioNombre}</strong></p>
       <p>Correo: <strong>{email}</strong></p>
