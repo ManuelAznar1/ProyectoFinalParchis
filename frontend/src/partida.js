@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Partida.css';
 import axios from 'axios';
 
-function Partida() {
+function Partida({ volverMenu }) {
   const [dice, setDice] = useState(null);
   const [rolling, setRolling] = useState(false);
 
@@ -24,21 +24,22 @@ function Partida() {
     <div>
       <h1>Tablero de Parchís</h1>
 
-      {/* --- DADO --- */}
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+      {/* Contenedor dado + botón Volver a la derecha, centrado verticalmente */}
+      <div className="derecha-centro">
         <button onClick={rollDice} disabled={rolling}>
           {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
         </button>
+
         {dice && !rolling && (
-          <>
-            <h2>Resultado: {dice}</h2>
-            <img
-              src={`/dice-${dice}.png`}
-              alt={`Dado ${dice}`}
-              style={{ width: '80px', marginTop: '10px' }}
-            />
-          </>
+          <img
+            src={`/dice-${dice}.png`}
+            alt={`Dado ${dice}`}
+          />
         )}
+
+        <button className="custom-button" onClick={volverMenu}>
+          Volver
+        </button>
       </div>
 
       {/* --- TABLERO --- */}

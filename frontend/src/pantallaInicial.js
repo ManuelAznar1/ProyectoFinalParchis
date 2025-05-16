@@ -63,8 +63,8 @@ function PantallaInicial({ onLogout, usuario }) {
     return (
       <div>
         <Navbar />
-        <Partida />
-        <button className="custom-button" onClick={volverMenu}>Volver</button>
+        <Partida volverMenu={volverMenu} />
+        {/* Ya no pongas el botón aquí */}
       </div>
     );
   }

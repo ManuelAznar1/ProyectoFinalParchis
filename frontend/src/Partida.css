@@ -17,6 +17,7 @@ td {
 h1 {
   text-align: center;
   color: black;
+  margin: 20px auto; /* para asegurar centrado y espacio */
 }
 
 .amarillo {
@@ -46,4 +47,51 @@ h1 {
 img {
   width: 100px;
   height: 100px;
+}
+
+.derecha-centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  right: 200px;
+  top: 61%; /* Cambiado de 50% a 55% para bajar el elemento */
+  transform: translateY(-50%);
+  gap: 15px;
+}
+
+/* Ajusta img y botón dentro de este contenedor */
+.derecha-centro img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border: 2px solid white;
+  border-radius: 8px;
+}
+.derecha-centro button {
+  width: 200px;             /* Ancho fijo para uniformidad */
+  margin: 10px 0;           /* Espaciado vertical */
+  padding: 12px 24px;
+  background-color: #e0f2f1; /* Verde azulado muy claro */
+  color: #00695c;           /* Verde oscuro para texto */
+  border: 2px solid #b2dfdb;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.derecha-centro button:hover:not(:disabled) {
+  background-color: #b2dfdb; /* Color un poco más fuerte al pasar mouse */
+  color: #004d40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.derecha-centro button:disabled {
+  background-color: #90caf9;
+  cursor: wait;
 }
