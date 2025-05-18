@@ -1,7 +1,7 @@
 // src/crearPartida.js
 import React, { useState } from 'react';
 
-function CrearPartida({ onIniciarPartida }) {
+function CrearPartida({ onIniciarPartida}) {
   const [jugadores, setJugadores] = useState(2);
 
   const crear = () => {

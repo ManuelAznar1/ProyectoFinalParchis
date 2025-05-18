@@ -5,12 +5,12 @@ import CrearPartida from './crearPartida';
 import UnirsePartida from './unirsePartida';
 import Partida from './partida';
 import Perfil from './perfil';
+import ElegirModoJuego from './elegirModoJuego';
 
 function PantallaInicial({ onLogout, usuario }) {
   const [vista, setVista] = useState('menu');
   const [modoOscuro, setModoOscuro] = useState(false);
 
-  // Aplicar o quitar clase en <body> para modo oscuro
   useEffect(() => {
     if (modoOscuro) {
       document.body.classList.add('modo-oscuro');
@@ -44,7 +44,22 @@ function PantallaInicial({ onLogout, usuario }) {
       <div>
         <Navbar />
         <CrearPartida onIniciarPartida={() => setVista('partida')} />
-        <button className="custom-button" onClick={volverMenu}>Volver</button>
+        <button className="custom-button" onClick={() => setVista('elegirModo')}>Volver</button>
+      </div>
+    );
+  }
+
+  if (vista === 'elegirModo') {
+    return (
+      <div>
+        <Navbar />
+        <ElegirModoJuego
+          onElegirModo={(modo) => {
+            console.log("Modo elegido:", modo);
+            setVista('crear');
+          }}
+          volver={volverMenu}
+        />
       </div>
     );
   }
@@ -64,7 +79,6 @@ function PantallaInicial({ onLogout, usuario }) {
       <div>
         <Navbar />
         <Partida volverMenu={volverMenu} />
-        {/* Ya no pongas el botón aquí */}
       </div>
     );
   }
@@ -102,7 +116,7 @@ function PantallaInicial({ onLogout, usuario }) {
       <div className="form-container">
         <h1>Menú Principal</h1>
 
-        <button className="custom-button" onClick={() => setVista('crear')}>Crear Partida</button>
+        <button className="custom-button" onClick={() => setVista('elegirModo')}>Crear Partida</button>
         <button className="custom-button" onClick={() => setVista('unirse')}>Unirse a Partida</button>
 
         <div className="profile-options">
