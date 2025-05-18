@@ -1,26 +1,47 @@
-// src/crearPartida.js
 import React, { useState } from 'react';
 
-function CrearPartida({ onIniciarPartida}) {
+function CrearPartida({ modo, onIniciarPartida }) {
   const [jugadores, setJugadores] = useState(2);
+  const [codigo, setCodigo] = useState(null);
+
+  const generarCodigo = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 4; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
 
   const crear = () => {
-    // Aquí podrías hacer una llamada al backend si quieres
-    console.log(`Partida creada con ${jugadores} jugadores`);
-    onIniciarPartida(); // 👈 Ir al tablero
+    if (modo === 'amigos') {
+      const nuevoCodigo = generarCodigo();
+      setCodigo(nuevoCodigo);
+      onIniciarPartida(nuevoCodigo);
+    } else {
+      onIniciarPartida(null);
+    }
   };
 
   return (
     <div className="form-container">
-      <h2>Crear Partida</h2>
+      <h2>Crear Partida {modo === 'amigos' ? 'con Amigos' : 'vs CPU'}</h2>
+      
+      {/* Selector de jugadores para ambos modos */}
       <label>Cantidad de Jugadores:</label>
-      <select value={jugadores} onChange={(e) => setJugadores(Number(e.target.value))}>
+      <select 
+        value={jugadores} 
+        onChange={(e) => setJugadores(Number(e.target.value))}
+      >
         <option value={2}>2 jugadores</option>
         <option value={3}>3 jugadores</option>
         <option value={4}>4 jugadores</option>
       </select>
       <br />
-      <button className="custom-button" onClick={crear}>Iniciar Partida</button>
+      
+      <button className="custom-button" onClick={crear}>
+        Iniciar Partida
+      </button>
     </div>
   );
 }

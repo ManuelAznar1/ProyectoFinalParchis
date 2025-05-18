@@ -1,5 +1,8 @@
 body {
   background-color: black;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* evita la barra vertical */
 }
 
 table {
@@ -10,14 +13,15 @@ table {
 }
 
 td {
-  width: 20px;
-  height: 20px;
+  width: 16px;  /* reducido */
+  height: 16px;
 }
 
 h1 {
   text-align: center;
   color: black;
-  margin: 20px auto; /* para asegurar centrado y espacio */
+  margin: 10px auto;
+  font-size: 1.4rem;
 }
 
 .amarillo {
@@ -45,8 +49,8 @@ h1 {
 }
 
 img {
-  width: 100px;
-  height: 100px;
+  width: 80px;  /* reducido */
+  height: 80px;
 }
 
 .derecha-centro {
@@ -56,12 +60,12 @@ img {
   justify-content: center;
   position: fixed;
   right: 200px;
-  top: 61%; /* Cambiado de 50% a 55% para bajar el elemento */
+  top: 61%;
   transform: translateY(-50%);
   gap: 15px;
 }
 
-/* Ajusta img y botón dentro de este contenedor */
+/* Imagen y botón */
 .derecha-centro img {
   width: 100px;
   height: 100px;
@@ -69,12 +73,13 @@ img {
   border: 2px solid white;
   border-radius: 8px;
 }
+
 .derecha-centro button {
-  width: 200px;             /* Ancho fijo para uniformidad */
-  margin: 10px 0;           /* Espaciado vertical */
+  width: 200px;
+  margin: 10px 0;
   padding: 12px 24px;
-  background-color: #e0f2f1; /* Verde azulado muy claro */
-  color: #00695c;           /* Verde oscuro para texto */
+  background-color: #e0f2f1;
+  color: #00695c;
   border: 2px solid #b2dfdb;
   border-radius: 10px;
   cursor: pointer;
@@ -85,7 +90,7 @@ img {
 }
 
 .derecha-centro button:hover:not(:disabled) {
-  background-color: #b2dfdb; /* Color un poco más fuerte al pasar mouse */
+  background-color: #b2dfdb;
   color: #004d40;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -94,4 +99,62 @@ img {
 .derecha-centro button:disabled {
   background-color: #90caf9;
   cursor: wait;
+}
+
+.codigo-texto, .modo-texto {
+  font-size: 1.2rem;
+  color: #333;
+  background-color: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-block;
+  margin: 10px auto;
+}
+
+.codigo-texto span, .modo-texto span {
+  color: #2c7be5;
+  font-weight: bold;
+}
+
+.partida-container {
+  text-align: center;
+}
+
+.codigo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.partida-wrapper {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.centered-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+  z-index: 10;
+}
+
+.codigo-partida, .modo-juego {
+  font-size: 1.5rem;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+.codigo-partida span, .modo-juego span {
+  color: #2c7be5;
+  font-weight: bold;
 }

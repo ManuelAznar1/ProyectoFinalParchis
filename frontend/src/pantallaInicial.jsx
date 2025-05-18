@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
 import CrearPartida from './crearPartida';
-import UnirsePartida from './unirsePartida';
+import UnirsePartida from './UnirsePartida';
 import Partida from './partida';
-import Perfil from './perfil';
-import ElegirModoJuego from './elegirModoJuego';
+import Perfil from './Perfil';
+import ElegirModoJuego from './ElegirModoJuego';
 
 function PantallaInicial({ onLogout, usuario }) {
   const [vista, setVista] = useState('menu');
   const [modoOscuro, setModoOscuro] = useState(false);
+  const [codigoPartida, setCodigoPartida] = useState(null);
+  const [modoJuego, setModoJuego] = useState(null);
 
   useEffect(() => {
     if (modoOscuro) {
@@ -23,7 +25,16 @@ function PantallaInicial({ onLogout, usuario }) {
     setModoOscuro(prev => !prev);
   };
 
-  const volverMenu = () => setVista('menu');
+  const volverMenu = () => {
+    setCodigoPartida(null);
+    setModoJuego(null);
+    setVista('menu');
+  };
+
+  const handleIniciarPartida = (codigo) => {
+    setCodigoPartida(codigo);
+    setVista('partida');
+  };
 
   const Navbar = () => (
     <nav className="navbar">
@@ -43,7 +54,7 @@ function PantallaInicial({ onLogout, usuario }) {
     return (
       <div>
         <Navbar />
-        <CrearPartida onIniciarPartida={() => setVista('partida')} />
+        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} />
         <button className="custom-button" onClick={() => setVista('elegirModo')}>Volver</button>
       </div>
     );
@@ -55,7 +66,7 @@ function PantallaInicial({ onLogout, usuario }) {
         <Navbar />
         <ElegirModoJuego
           onElegirModo={(modo) => {
-            console.log("Modo elegido:", modo);
+            setModoJuego(modo);
             setVista('crear');
           }}
           volver={volverMenu}
@@ -78,7 +89,11 @@ function PantallaInicial({ onLogout, usuario }) {
     return (
       <div>
         <Navbar />
-        <Partida volverMenu={volverMenu} />
+        <Partida 
+          volverMenu={volverMenu} 
+          codigo={codigoPartida} 
+          modo={modoJuego} 
+        />
       </div>
     );
   }
@@ -115,10 +130,8 @@ function PantallaInicial({ onLogout, usuario }) {
       <Navbar />
       <div className="form-container">
         <h1>Menú Principal</h1>
-
         <button className="custom-button" onClick={() => setVista('elegirModo')}>Crear Partida</button>
         <button className="custom-button" onClick={() => setVista('unirse')}>Unirse a Partida</button>
-
         <div className="profile-options">
           <button className="custom-button" onClick={() => setVista('perfil')}>Perfil</button>
           <button className="custom-button" onClick={() => setVista('opciones')}>Opciones</button>

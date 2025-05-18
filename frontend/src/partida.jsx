@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import './Partida.css';
 import axios from 'axios';
 
-function Partida({ volverMenu }) {
+function Partida({ volverMenu, codigo, modo, jugadores = 2 }) {
   const [dice, setDice] = useState(null);
   const [rolling, setRolling] = useState(false);
+  const [turnoActual, setTurnoActual] = useState(1);
 
   const rollDice = async () => {
     setRolling(true);
@@ -12,72 +13,88 @@ function Partida({ volverMenu }) {
       const res = await axios.get('http://localhost:3001/roll');
       setTimeout(() => {
         setDice(res.data.number);
+        setTurnoActual((prevTurno) => (prevTurno === jugadores ? 1 : prevTurno + 1));
         setRolling(false);
-      }, 500); // Simula tiempo de "rodado"
+      }, 500);
     } catch (err) {
       console.error("Error al lanzar el dado:", err);
       setRolling(false);
     }
   };
 
+  const mostrarInfoPartida = (
+    <h2 className="codigo-texto">
+      {modo === 'CPU' ? (
+        <>Modo: <span style={{ color: 'green' }}>VS CPU</span></>
+      ) : (
+        <>Código de Partida: <span>{codigo}</span></>
+      )}
+    </h2>
+  );
+
   return (
     <div>
-      <h1>Tablero de Parchís</h1>
+      <div className="codigo-container" style={{ textAlign: 'center' }}>
+        {mostrarInfoPartida}
+      </div>
 
       {/* Contenedor dado + botón Volver a la derecha, centrado verticalmente */}
       <div className="derecha-centro">
+        {/* Añadido el turno aquí */}
+        <div className="turno-jugador">
+          Turno: Jugador <span style={{ 
+            color: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'][turnoActual - 1],
+            fontWeight: 'bold'
+          }}>{turnoActual}</span>
+        </div>
+        
         <button onClick={rollDice} disabled={rolling}>
           {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
         </button>
 
         {dice && !rolling && (
-          <img
-            src={`/dice-${dice}.png`}
-            alt={`Dado ${dice}`}
-          />
+          <img src={`/assets/images/dice-${dice}.png`} alt={`Dado ${dice}`} />
         )}
 
         <button className="custom-button" onClick={volverMenu}>
           Volver
         </button>
       </div>
-
       {/* --- TABLERO --- */}
       <table border="1">
         <tbody>
           {/* Fila 1 */}
           <tr>
             <td id="casaAmarillo" className="amarillo" colSpan="7" rowSpan="7">
-
-              <table style={{ width: 100+'%' }}>
-                <tr>
-                  <td><span class="ficha amarillo">1</span></td>
-                  <td><span class="ficha amarillo">2</span></td>
-                </tr>
-                <tr>
-                  <td><span class="ficha amarillo">3</span></td>
-                  <td><span class="ficha amarillo">4</span></td>
-                </tr>
+              <table style={{ width: '100%' }}>
+                <tbody>
+                  <tr>
+                    <td><span className="ficha amarillo">1</span></td>
+                    <td><span className="ficha amarillo">2</span></td>
+                  </tr>
+                  <tr>
+                    <td><span className="ficha amarillo">3</span></td>
+                    <td><span className="ficha amarillo">4</span></td>
+                  </tr>
+                </tbody>
               </table>
-
             </td>
             <td colSpan="2">1</td>
             <td colSpan="2">68</td>
             <td colSpan="2">67</td>
             <td id="casaVerde" className="verde" colSpan="7" rowSpan="7">
-
-              <table style={{ width: 100+'%' }}>
-                <tr>
-                  <td><span class="ficha verde">1</span></td>
-                  <td><span class="ficha verde">2</span></td>
-                </tr>
-                <tr>
-                  <td><span class="ficha verde">3</span></td>
-                  <td><span class="ficha verde">4</span></td>
-                </tr>
+              <table style={{ width: '100%' }}>
+                <tbody>
+                  <tr>
+                    <td><span className="ficha verde">1</span></td>
+                    <td><span className="ficha verde">2</span></td>
+                  </tr>
+                  <tr>
+                    <td><span className="ficha verde">3</span></td>
+                    <td><span className="ficha verde">4</span></td>
+                  </tr>
+                </tbody>
               </table>
-
-
             </td>
           </tr>
           {/* Fila 2 */}
@@ -122,7 +139,7 @@ function Partida({ volverMenu }) {
             <td rowSpan="2">15</td>
             <td rowSpan="2">14</td>
             <td rowSpan="2">13</td>
-            <td rowSpan="2"><span class="seguro">12</span></td>
+            <td rowSpan="2"><span className="seguro">12</span></td>
             <td rowSpan="2">11</td>
             <td rowSpan="2">10</td>
             <td id="vacio"></td>
@@ -205,37 +222,35 @@ function Partida({ volverMenu }) {
           {/* Fila 14 */}
           <tr>
             <td id="casaAzul" className="azul" colSpan="7" rowSpan="7">
-
-              <table style={{ width: 100+'%' }}>
-                <tr>
-                  <td><span class="ficha azul">1</span></td>
-                  <td><span class="ficha azul">2</span></td>
-                </tr>
-                <tr>
-                  <td><span class="ficha azul">3</span></td>
-                  <td><span class="ficha azul">4</span></td>
-                </tr>
+              <table style={{ width: '100%' }}>
+                <tbody>
+                  <tr>
+                    <td><span className="ficha azul">1</span></td>
+                    <td><span className="ficha azul">2</span></td>
+                  </tr>
+                  <tr>
+                    <td><span className="ficha azul">3</span></td>
+                    <td><span className="ficha azul">4</span></td>
+                  </tr>
+                </tbody>
               </table>
-
-
             </td>
             <td colSpan="2">27</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">41</td>
             <td id="casaRojo" className="rojo" colSpan="7" rowSpan="7">
-
-
-              <table style={{ width: 100+'%' }}>
-                <tr>
-                  <td><span class="ficha rojo">1</span></td>
-                  <td><span class="ficha rojo">2</span></td>
-                </tr>
-                <tr>
-                  <td><span class="ficha rojo">3</span></td>
-                  <td><span class="ficha rojo">4</span></td>
-                </tr>
+              <table style={{ width: '100%' }}>
+                <tbody>
+                  <tr>
+                    <td><span className="ficha rojo">1</span></td>
+                    <td><span className="ficha rojo">2</span></td>
+                  </tr>
+                  <tr>
+                    <td><span className="ficha rojo">3</span></td>
+                    <td><span className="ficha rojo">4</span></td>
+                  </tr>
+                </tbody>
               </table>
-
             </td>
           </tr>
           {/* Fila 15 */}
