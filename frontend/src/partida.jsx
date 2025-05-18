@@ -47,11 +47,38 @@ function Partida({ volverMenu }) {
         <tbody>
           {/* Fila 1 */}
           <tr>
-            <td className="amarillo" colSpan="7" rowSpan="7"></td>
+            <td id="casaAmarillo" className="amarillo" colSpan="7" rowSpan="7">
+
+              <table style={{ width: 100+'%' }}>
+                <tr>
+                  <td><span class="ficha amarillo">1</span></td>
+                  <td><span class="ficha amarillo">2</span></td>
+                </tr>
+                <tr>
+                  <td><span class="ficha amarillo">3</span></td>
+                  <td><span class="ficha amarillo">4</span></td>
+                </tr>
+              </table>
+
+            </td>
             <td colSpan="2">1</td>
             <td colSpan="2">68</td>
             <td colSpan="2">67</td>
-            <td className="verde" colSpan="7" rowSpan="7"></td>
+            <td id="casaVerde" className="verde" colSpan="7" rowSpan="7">
+
+              <table style={{ width: 100+'%' }}>
+                <tr>
+                  <td><span class="ficha verde">1</span></td>
+                  <td><span class="ficha verde">2</span></td>
+                </tr>
+                <tr>
+                  <td><span class="ficha verde">3</span></td>
+                  <td><span class="ficha verde">4</span></td>
+                </tr>
+              </table>
+
+
+            </td>
           </tr>
           {/* Fila 2 */}
           <tr>
@@ -95,7 +122,7 @@ function Partida({ volverMenu }) {
             <td rowSpan="2">15</td>
             <td rowSpan="2">14</td>
             <td rowSpan="2">13</td>
-            <td rowSpan="2">12</td>
+            <td rowSpan="2"><span class="seguro">12</span></td>
             <td rowSpan="2">11</td>
             <td rowSpan="2">10</td>
             <td id="vacio"></td>
@@ -177,11 +204,39 @@ function Partida({ volverMenu }) {
           </tr>
           {/* Fila 14 */}
           <tr>
-            <td className="azul" colSpan="7" rowSpan="7"></td>
+            <td id="casaAzul" className="azul" colSpan="7" rowSpan="7">
+
+              <table style={{ width: 100+'%' }}>
+                <tr>
+                  <td><span class="ficha azul">1</span></td>
+                  <td><span class="ficha azul">2</span></td>
+                </tr>
+                <tr>
+                  <td><span class="ficha azul">3</span></td>
+                  <td><span class="ficha azul">4</span></td>
+                </tr>
+              </table>
+
+
+            </td>
             <td colSpan="2">27</td>
             <td className="rojo" colSpan="2">-</td>
             <td colSpan="2">41</td>
-            <td className="rojo" colSpan="7" rowSpan="7"></td>
+            <td id="casaRojo" className="rojo" colSpan="7" rowSpan="7">
+
+
+              <table style={{ width: 100+'%' }}>
+                <tr>
+                  <td><span class="ficha rojo">1</span></td>
+                  <td><span class="ficha rojo">2</span></td>
+                </tr>
+                <tr>
+                  <td><span class="ficha rojo">3</span></td>
+                  <td><span class="ficha rojo">4</span></td>
+                </tr>
+              </table>
+
+            </td>
           </tr>
           {/* Fila 15 */}
           <tr>

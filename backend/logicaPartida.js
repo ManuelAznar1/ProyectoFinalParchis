@@ -1,5 +1,3 @@
-// logicaPartida.js
-
 const COLORES = ['rojo', 'verde', 'amarillo', 'azul'];
 const NUM_FICHAS = 4;
 const TABLERO_TOTAL = 68;
@@ -34,12 +32,13 @@ class LogicaPartida {
     if (color !== turno) return `No es el turno de ${color}`;
     if (dado === null) return 'Debes tirar el dado primero';
 
-    // Sacar ficha de casa
+    // Sacar ficha de casa solo si saca 5
     if (ficha === 'casa') {
       if (dado === 5) {
         const salida = this.casillaSalida(color);
         this.comerSiHay(color, salida);
         this.estado.fichas[color][index] = salida;
+        this.estado.dado = null; // dado usado
         return `¡${color} saca ficha ${index} a la casilla ${salida}!`;
       } else {
         return 'Necesitas un 5 para sacar ficha de casa';
@@ -55,9 +54,10 @@ class LogicaPartida {
 
       const haComido = this.comerSiHay(color, destino);
       this.estado.fichas[color][index] = destino;
+      this.estado.dado = null;
 
       if (dado === 6 || haComido) {
-        this.estado.dado = null;
+        // Repite turno
         return `¡${color} mueve ficha ${index} a ${destino} y repite turno!`;
       } else {
         this.siguienteTurno();
@@ -100,4 +100,6 @@ class LogicaPartida {
   }
 }
 
-export default LogicaPartida;
+const partida = new LogicaPartida();
+
+module.exports = partida;

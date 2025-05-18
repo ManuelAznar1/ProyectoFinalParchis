@@ -3,6 +3,7 @@ import './App.css';
 import logo from './logoParchis.png';
 import PantallaInicial from './pantallaInicial';
 
+
 function App() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
