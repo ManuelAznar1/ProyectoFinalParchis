@@ -1,19 +1,82 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Partida.css';
 import axios from 'axios';
+import Chat from './Chat';
 
-function Partida({ volverMenu, codigo, modo, jugadores = 2 }) {
+function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
   const [dice, setDice] = useState(null);
   const [rolling, setRolling] = useState(false);
   const [turnoActual, setTurnoActual] = useState(1);
+  
+  useEffect(() => {
 
+    socket.on('send turn', (msg) => {
+        
+      if (msg.partida === codigo && msg.user !== usuario?.nombre)   {
+        console.log('turno remoto para mi:'+msg.turnoActual);
+       
+        setTurnoActual(msg.turnoActual); 
+        setDice(msg.dado);
+      }else{
+          console.log('turno remoto: IGNORADO');
+      }
+
+    });
+    
+    socket.on('send partida', (msg) => {
+    
+        console.log('msg.codigo:'+msg.codigo + ' - codigo: ' +codigo);        
+            
+      if (msg.codigo === codigo)   {
+        console.log('cargando mi partida:'+msg.codigo);
+       
+        setTurnoActual(msg.current_turn); 
+        setDice(msg.dice);
+        
+        
+      }else{
+          console.log('partida remoto: IGNORADO');
+      }
+
+    });    
+
+    return () => {
+      socket.off('send turn');
+      socket.off('send partida');      
+    };
+  }, []);  
+  
+  function sendTurno(turno, dado) {
+      const usuarioNombre = usuario?.nombre;
+      
+      console.log('enviando turno: ' +turno);
+      
+      socket.emit('send turn', { partida: codigo, user: usuarioNombre, turnoActual: turno, dado });
+  }  
+
+
+  function sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion) {
+      const usuarioNombre = usuario?.nombre;
+      
+      console.log('enviando movimiento ficha: ' +ficha + ', anteriorPosicion: ' + anteriorPosicion + ', nuevaPosicion: ' + nuevaPosicion);
+      
+      socket.emit('send mover ficha', { partida: codigo, user: usuarioNombre, ficha,  anteriorPosicion, nuevaPosicion});
+  }  
+  
   const rollDice = async () => {
     setRolling(true);
     try {
-      const res = await axios.get('http://localhost:3001/roll');
+      const res = await axios.get(import.meta.env.VITE_BACKEND_HOST+'/roll');
       setTimeout(() => {
-        setDice(res.data.number);
-        setTurnoActual((prevTurno) => (prevTurno === jugadores ? 1 : prevTurno + 1));
+          
+        const dado = res.data.number;
+        setDice(dado);
+        
+        const nuevoTurno = (turnoActual === jugadores) ? 1 : (turnoActual + 1);
+        setTurnoActual(nuevoTurno);
+
+        sendTurno(nuevoTurno, dado);
+        
         setRolling(false);
       }, 500);
     } catch (err) {
@@ -34,6 +97,11 @@ function Partida({ volverMenu, codigo, modo, jugadores = 2 }) {
 
   return (
     <div>
+        
+        
+      <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre}/>
+        
+        
       <div className="codigo-container" style={{ textAlign: 'center' }}>
         {mostrarInfoPartida}
       </div>
@@ -160,10 +228,7 @@ function Partida({ volverMenu, codigo, modo, jugadores = 2 }) {
           <tr>
             <td>9</td>
             <td colSpan="4" rowSpan="4">
-              <img
-                src="http://ilusionesopticas.org.es/wp-content/uploads/2015/10/movimiento-de-centro-hacia-afuera-400x400.jpg"
-                alt="Centro del tablero"
-              />
+                CENTRO
             </td>
             <td>59</td>
           </tr>

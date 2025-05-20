@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  parchis_db:
+    image: mysql:8
+    container_name: mysql_proyectofinal
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: parchis
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  parchis_backend:
+    build: ./backend
+    container_name: backend_proyectofinal
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: parchis
+    ports:
+      - "3001:3001"
+    depends_on:
+      parchis_db:
+        condition: service_healthy
+        
+  parchis_frontend:
+    build: ./frontend
+    container_name: frontend_proyectofinal
+    ports:
+      - "3000:3000"
+    depends_on:
+      - parchis_backend
+
+volumes:
+  mysql_data:
+

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-function CrearPartida({ modo, onIniciarPartida }) {
+
+function CrearPartida({ modo, onIniciarPartida, socket }) {
   const [jugadores, setJugadores] = useState(2);
   const [codigo, setCodigo] = useState(null);
 
@@ -12,12 +13,22 @@ function CrearPartida({ modo, onIniciarPartida }) {
     }
     return result;
   };
+  
+  const joinPartida = (codigo) => {
+    if (codigo.trim()) {
+      socket.emit('join', { codigo });
+    }
+  };  
 
   const crear = () => {
     if (modo === 'amigos') {
       const nuevoCodigo = generarCodigo();
       setCodigo(nuevoCodigo);
+      
+      joinPartida(nuevoCodigo)
+      
       onIniciarPartida(nuevoCodigo);
+      
     } else {
       onIniciarPartida(null);
     }

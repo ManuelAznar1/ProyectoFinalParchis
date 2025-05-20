@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
 import PantallaInicial from './pantallaInicial';
+import { io } from 'socket.io-client';
 
+
+const socket = io(import.meta.env.VITE_BACKEND_HOST);
 
 function App() {
   const [nombre, setNombre] = useState('');
@@ -16,7 +19,7 @@ function App() {
   const registrarUsuario = () => {
     const usuario = { nombre, email, contrasena };
 
-    fetch('http://localhost:3001/crear-usuario', {
+    fetch(import.meta.env.VITE_BACKEND_HOST+'/crear-usuario', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(usuario),
@@ -45,7 +48,7 @@ function App() {
   const iniciarSesion = () => {
     const usuario = { email, contrasena };
 
-    fetch('http://localhost:3001/iniciar-sesion', {
+    fetch(import.meta.env.VITE_BACKEND_HOST+'/iniciar-sesion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(usuario),
@@ -73,6 +76,7 @@ function App() {
   if (token) {
     return (
       <PantallaInicial
+
         onLogout={() => {
           setToken(null);
           localStorage.removeItem('usuarioNombre');
@@ -84,6 +88,8 @@ function App() {
           email: localStorage.getItem('usuarioEmail'),
           fechaRegistro: localStorage.getItem('usuarioFechaRegistro'),
         }}
+        
+        socket={socket}
       />
     );
   }

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
 import CrearPartida from './crearPartida';
-import UnirsePartida from './UnirsePartida';
+import UnirsePartida from './unirsePartida';
 import Partida from './partida';
-import Perfil from './Perfil';
-import ElegirModoJuego from './ElegirModoJuego';
+import Perfil from './perfil';
+import ElegirModoJuego from './elegirModoJuego';
 
-function PantallaInicial({ onLogout, usuario }) {
+function PantallaInicial({ onLogout, usuario, socket }) {
   const [vista, setVista] = useState('menu');
   const [modoOscuro, setModoOscuro] = useState(false);
   const [codigoPartida, setCodigoPartida] = useState(null);
@@ -54,7 +54,7 @@ function PantallaInicial({ onLogout, usuario }) {
     return (
       <div>
         <Navbar />
-        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} />
+        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} socket={socket} />
         <button className="custom-button" onClick={() => setVista('elegirModo')}>Volver</button>
       </div>
     );
@@ -79,7 +79,7 @@ function PantallaInicial({ onLogout, usuario }) {
     return (
       <div>
         <Navbar />
-        <UnirsePartida />
+        <UnirsePartida onIniciarPartida={handleIniciarPartida} socket={socket} />
         <button className="custom-button" onClick={volverMenu}>Volver</button>
       </div>
     );
@@ -90,9 +90,11 @@ function PantallaInicial({ onLogout, usuario }) {
       <div>
         <Navbar />
         <Partida 
+          socket={socket}
           volverMenu={volverMenu} 
           codigo={codigoPartida} 
           modo={modoJuego} 
+          usuario={usuario}
         />
       </div>
     );

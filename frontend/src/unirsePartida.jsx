@@ -2,16 +2,27 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function UnirsePartida() {
-  const [codigo, setCodigo] = useState('');
+function UnirsePartida({codigoPartida, onIniciarPartida, socket}) {
+  const [codigo, setCodigo] = useState(codigoPartida);
 
+  const joinPartida = (codigo) => {
+    if (codigo.trim()) {
+      socket.emit('join', { codigo });
+    }
+  };  
+  
   const unirse = () => {
     if (!codigo.trim()) {
       alert('Por favor ingresa un código válido');
       return;
     }
-    alert(`Intentando unirse a la partida con código: ${codigo}`);
-    // Aquí podrías hacer la llamada al backend para unirse a la partida
+    
+    console.log('Intentando unirse a la partida con código: ' + codigo);
+      
+    joinPartida(codigo);
+    
+    onIniciarPartida(codigo);
+      
   };
 
   return (
