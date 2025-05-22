@@ -93,7 +93,9 @@ io.on('connection', (socket) => {
   });  
   
   socket.on('send mover ficha', async ({ partida, user, ficha, dado, anteriorPosicion, nuevaPosicion }) => {
+      
     const timestamp = new Date();
+/*      
     const [partidaRow] = await db.execute('SELECT id FROM partidas WHERE codigo = ?', [partida]);
     const partida_id = partidaRow[0]?.id;
     if (!partida_id) return;
@@ -106,10 +108,10 @@ io.on('connection', (socket) => {
     console.log('partida_id: '+partida_id);    
     console.log('user: '+user);
     console.log('jugador_id: '+jugador_id);    
-
+*/
     console.log('anteriorPosicion: '+anteriorPosicion);
     console.log('nuevaPosicion: '+nuevaPosicion);
-    
+   
 /*
     id INT AUTO_INCREMENT PRIMARY KEY,
     jugador_id INT,
@@ -122,12 +124,13 @@ io.on('connection', (socket) => {
     FOREIGN KEY (jugador_id) REFERENCES jugadores(id) ON DELETE CASCADE,
     FOREIGN KEY (partida_id) REFERENCES partidas(id) ON DELETE CASCADE
  */    
-
+/*
     await db.execute(
       'INSERT INTO movimientos (jugador_id, partida_id, ficha, dado, posicion_anterior, posicion_nueva) VALUES (?, ?, ?, ?, ?, ?)',
       [jugador_id, partida_id, ficha, dado, anteriorPosicion, nuevaPosicion]
     );
-    io.to(partida).emit('send turn', { partida, user, ficha, dado, anteriorPosicion, nuevaPosicion, timestamp });
+    */
+    io.to(partida).emit('send mover ficha', { partida, user, ficha, dado, anteriorPosicion, nuevaPosicion, timestamp });
   });    
   
 });
