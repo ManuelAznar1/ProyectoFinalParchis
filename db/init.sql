@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS jugadores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nickname VARCHAR(255) NOT NULL,
     posicion INT DEFAULT 0,
-    color ENUM('rojo', 'azul', 'verde', 'amarillo'),
+    color INT NOT NULL, 
     partida_id INT,
     FOREIGN KEY (partida_id) REFERENCES partidas(id) ON DELETE CASCADE
 );
@@ -55,3 +55,5 @@ CREATE TABLE mensajes (
   FOREIGN KEY (partida_id) REFERENCES partidas(id) ON DELETE CASCADE
 );
 
+INSERT INTO `` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (1,'m','m@gmail.com','$2b$10$mOY4mRJN6iEpJHWkyZ8tdefT57DxSHWPJzfnSUC0H0LQ0Lw6axL6.','2025-05-20 15:46:29');
+INSERT INTO `` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (2,'s','s@gmail.com','$2b$10$XkxKKzLWIXhbevcoFqhDrOGo0zKFI2VAZImgkc/gtIV3jkeITi9f2','2025-05-20 15:47:05');

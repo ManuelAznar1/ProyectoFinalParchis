@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
-import "./TableroParchis.css"; // Asumiendo que tendrás aquí los estilos
-import { posicionesIniciales, moverFichaTablero } from "./logicaParchis"; // Importa la lógica del juego
+import "./TableroParchis.css";
+import { posicionesIniciales, moverFichaTablero, esMiTurno } from "./logicaParchis";
 
 
-const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) => {
+const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambiarMensaje }, ref) => {
     const [posiciones, setPosiciones] = useState(posicionesIniciales);
     const [dado, setDado] = useState(null);
     const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
@@ -11,59 +11,58 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
 
 
     useImperativeHandle(ref, () => ({
-            recibirDado(valor) {
-                console.log("Recibido en TableroParchis:", valor);
-                setDado(valor);
-                setFichaSeleccionada(null);
-            },
+        recibirDado(valor) {
+            console.log("Recibido en TableroParchis:", valor);
+            setDado(valor);
+            setFichaSeleccionada(null);
+        },
 
-            recibirTurno(turnoJugador) {
-                console.log("Recibido en TablerooParchis turno:", turnoJugador);
-                setTurnoActual(turnoJugador);
-            },
-            
-            cambiarPosicionesDesdeSocket(posiciones) {
-                console.log("Recibido en Tablero Parchis posiciones:", posiciones);
-                setPosiciones(posiciones);
-            },            
+        recibirTurno(turnoJugador) {
+            console.log("Recibido en TablerooParchis turno:", turnoJugador);
+            setTurnoActual(turnoJugador);
+        },
 
-            moverFichaDesdeSocket(fichaSeleccionada, posicion) {
-                console.log("Recibido en TableroParchis - ficha: " + fichaSeleccionada + " , posicion: " + posicion);
-//      setFichaSeleccionada(idFicha);
-                let recorridoTablero = recorridoTableroAmarillo;
-                if (fichaSeleccionada.startsWith("ficha4")) {
-                    recorridoTablero = recorridoTableroAzul;
-                } else if (fichaSeleccionada.startsWith("ficha3")) {
-                    recorridoTablero = recorridoTableroRojo;
-                } else if (fichaSeleccionada.startsWith("ficha2")) {
-                    recorridoTablero = recorridoTableroVerde;
-                }
+        cambiarPosicionesDesdeSocket(posiciones) {
+            console.log("Recibido en Tablero Parchis posiciones:", posiciones);
+            setPosiciones(posiciones);
+        },
 
-                const posActual = posiciones[fichaSeleccionada];
-                const indiceActual = recorridoTablero.indexOf(posActual);
-
-                let indiceNuevo = posicion;
-
-                if (indiceNuevo >= recorridoTablero.length) {
-                    indiceNuevo = recorridoTablero.length - 1;
-                }
-
-                console.log('Movimiento Remoto: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
-
-                const nuevaPos = recorridoTablero[indiceNuevo];
-                console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
-
-                setPosiciones({
-                    ...posiciones,
-                    [fichaSeleccionada]: nuevaPos,
-                });
-
-                setDado(null);
-                setFichaSeleccionada(null);
-
+        moverFichaDesdeSocket(fichaSeleccionada, posicion) {
+            console.log("Recibido en TableroParchis - ficha: " + fichaSeleccionada + " , posicion: " + posicion);
+            //      setFichaSeleccionada(idFicha);
+            let recorridoTablero = recorridoTableroAmarillo;
+            if (fichaSeleccionada.startsWith("ficha4")) {
+                recorridoTablero = recorridoTableroAzul;
+            } else if (fichaSeleccionada.startsWith("ficha3")) {
+                recorridoTablero = recorridoTableroRojo;
+            } else if (fichaSeleccionada.startsWith("ficha2")) {
+                recorridoTablero = recorridoTableroVerde;
             }
-        }));
 
+            const posActual = posiciones[fichaSeleccionada];
+            const indiceActual = recorridoTablero.indexOf(posActual);
+
+            let indiceNuevo = posicion;
+
+            if (indiceNuevo >= recorridoTablero.length) {
+                indiceNuevo = recorridoTablero.length - 1;
+            }
+
+            console.log('Movimiento Remoto: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
+
+            const nuevaPos = recorridoTablero[indiceNuevo];
+            console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
+
+            setPosiciones({
+                ...posiciones,
+                [fichaSeleccionada]: nuevaPos,
+            });
+
+            setDado(null);
+            setFichaSeleccionada(null);
+
+        }
+    }));
 
     useEffect(() => {
         console.log("Posiciones actualizadas:", posiciones);
@@ -71,50 +70,34 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
 
 
     function tirarDado() {
-        const valor = 5;//Math.floor(Math.random() * 6) + 1;
+        const valor = Math.floor(Math.random() * 6) + 1;
         setDado(valor);
         setFichaSeleccionada(null);
     }
 
     function seleccionarFicha(idFicha) {
-
-        console.log('seleccionarFicha - idFicha: ' + idFicha + ' , ' + turnoActual);
-
-        setFichaSeleccionada(idFicha);
-        /*
-         Para poder probar hasta que funcione bien lo de los turnos no se mira de quien es
-         
-         if (idFicha.startsWith("ficha4") && turnoActual === 4) {
-         setFichaSeleccionada(idFicha);
-         } else if (idFicha.startsWith("ficha3") && turnoActual === 3) {
-         setFichaSeleccionada(idFicha);
-         } else if (idFicha.startsWith("ficha2") && turnoActual === 2) {
-         setFichaSeleccionada(idFicha);
-         } else if (idFicha.startsWith("ficha1") && turnoActual === 1) {
-         setFichaSeleccionada(idFicha);
-         } else {
-         alert('No es el turno de este jugador');
-         }
-         
-         */
-        
-        moverFichaLocal(idFicha);
+        if (esMiTurno(idFicha, turnoActual)) {
+            setFichaSeleccionada(idFicha);
+            moverFichaLocal(idFicha);
+        } else {
+            onCambiarMensaje("No es tu turno para mover esta ficha");
+        }
     }
 
     function moverFichaLocal(fichaSeleccionada) {
         if (!fichaSeleccionada) {
-            alert("Selecciona una ficha para mover");
+            onCambiarMensaje("Selecciona una ficha para mover");
             return;
         }
         if (!dado) {
-            alert("Tira el dado antes de mover");
+            onCambiarMensaje("Tira el dado antes de mover");
             return;
         }
 
         let posicionesNuevas = moverFichaTablero(posiciones, fichaSeleccionada, dado);
 
         setPosiciones(posicionesNuevas);
-        
+
         console.log('posiciones a mandar: ' + posicionesNuevas);
 
         onCambiarPosiciones(fichaSeleccionada, posicionesNuevas);
@@ -124,125 +107,51 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
 
 
     }
-    
-    
-    function moverFichaViejo() {
-        if (!fichaSeleccionada) {
-            alert("Selecciona una ficha para mover");
-            return;
-        }
-        if (!dado) {
-            alert("Tira el dado antes de mover");
-            return;
-        }
-
-        let recorridoTablero = recorridoTableroAmarillo;
-        if (fichaSeleccionada.startsWith("ficha4")) {
-            recorridoTablero = recorridoTableroAzul;
-        } else if (fichaSeleccionada.startsWith("ficha3")) {
-            recorridoTablero = recorridoTableroRojo;
-        } else if (fichaSeleccionada.startsWith("ficha2")) {
-            recorridoTablero = recorridoTableroVerde;
-        }
-
-
-        const posActual = posiciones[fichaSeleccionada];
-        const indiceActual = recorridoTablero.indexOf(posActual);
-
-        if (indiceActual === -1 && dado != 5) {
-            alert("La ficha está en casa. Debes sacar ficha con un 5 para poder mover (no implementado aquí).");
-            return;
-        }
-
-        if (indiceActual === -1 && dado == 5) {
-
-            const indiceNuevo = 0;
-            const nuevaPos = recorridoTablero[0];
-
-            setPosiciones({
-                ...posiciones,
-                [fichaSeleccionada]: nuevaPos,
-            });
-
-            onMoverFicha(fichaSeleccionada, indiceActual, indiceNuevo);
-
-
-            setDado(null);
-            setFichaSeleccionada(null);
-
-
-            return;
-        }
-
-        let indiceNuevo = indiceActual + dado;
-
-        if (indiceNuevo >= recorridoTablero.length) {
-            indiceNuevo = recorridoTablero.length - 1;
-        }
-
-        console.log('Movimiento: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
-
-        const nuevaPos = recorridoTablero[indiceNuevo];
-        console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
-
-        setPosiciones({
-            ...posiciones,
-            [fichaSeleccionada]: nuevaPos,
-        });
-
-        onMoverFicha(fichaSeleccionada, indiceActual, indiceNuevo);
-
-        setDado(null);
-        setFichaSeleccionada(null);
-    }    
 
     function renderFichasEnCelda(idCelda) {
-
         const fichasEnCelda = Object.entries(posiciones)
-                .filter(([_, celda]) => celda === idCelda)
-                .map(([fichaId]) => {
-                    //console.log('fichaId: ' + fichaId + " - idCelda: " + idCelda)
-                    const color = fichaId.startsWith("ficha1")
-                            ? "amarillo"
-                            : fichaId.startsWith("ficha2")
-                            ? "verde"
-                            : fichaId.startsWith("ficha3")
-                            ? "rojo"
-                            : "azul";
+            .filter(([_, celda]) => celda === idCelda)
+            .map(([fichaId]) => {
+                const colorMap = {
+                    ficha1: "amarillo",
+                    ficha2: "verde",
+                    ficha3: "rojo",
+                    ficha4: "azul",
+                };
+                const color = colorMap[fichaId.slice(0, 6)] || "gris";
 
-                    return (
-                            <span
-                                key={fichaId}
-                                id={fichaId}
-                                className={`ficha ${color}`}
-                                onClick={() => {seleccionarFicha(fichaId);}}
-                                style={{
-                                        cursor: "pointer",
-                                        border: fichaSeleccionada === fichaId ? "2px solid black" : "none",
-                                        margin: "2px",
-                                        padding: "4px",
-                                        borderRadius: "50%",
-                                        display: "inline-block",
-                                        backgroundColor: color,
-                                        color: "white",
-                                        userSelect: "none",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                {fichaId.slice(-1)}
-                            </span>
-                            );
-                });
-
+                return (
+                    <span
+                        key={fichaId}
+                        id={fichaId}
+                        className={`ficha ${color}`}
+                        onClick={() => seleccionarFicha(fichaId)}
+                        style={{
+                            cursor: "pointer",
+                            border: fichaSeleccionada === fichaId ? "2px solid black" : "none",
+                            margin: "2px",
+                            padding: "4px",
+                            borderRadius: "50%",
+                            display: "inline-block",
+                            backgroundColor: color,
+                            color: "white",
+                            userSelect: "none",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        {fichaId.slice(-1)}
+                    </span>
+                );
+            });
         return fichasEnCelda.length ? fichasEnCelda : null;
     }
 
 
 
     return (
-            <>          
-            <div style={{float: "right"}}>
-                {dado !== null && <span style={{marginLeft: "1em"}}>Dado: {dado}</span>}            
+        <>
+            <div style={{ float: "right" }}>
+                {dado !== null && <span style={{ marginLeft: "1em" }}>Dado: {dado}</span>}
                 <button onClick={() => setDado(1)}>1</button>
                 <button onClick={() => setDado(2)}>2</button>
                 <button onClick={() => setDado(3)}>3</button>
@@ -250,7 +159,9 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                 <button onClick={() => setDado(5)}>5</button>
                 <button onClick={() => setDado(6)}>6</button>
 
-            </div>            
+            </div>
+
+
             <table border="1">
                 <tbody>
                     <tr>
@@ -259,8 +170,8 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                             colSpan={7}
                             rowSpan={7}
                             id="home-amarillo"
-                            style={{verticalAlign: "top", padding: "5px"}}
-                            >
+                            style={{ verticalAlign: "top", padding: "5px" }}
+                        >
                             {renderFichasEnCelda("home-amarillo")}
                         </td>
                         <td colSpan={2} id="cell-1">1 {renderFichasEnCelda("cell-1")}</td>
@@ -271,48 +182,48 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                             colSpan={7}
                             rowSpan={7}
                             id="home-verde"
-                            style={{verticalAlign: "top", padding: "5px"}}
-                            >
+                            style={{ verticalAlign: "top", padding: "5px" }}
+                        >
                             {renderFichasEnCelda("home-verde")}
                         </td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-2">2 {renderFichasEnCelda("cell-2")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-1">- {renderFichasEnCelda("path-amarillo-1")}</td>
                         <td colSpan={2} id="cell-66">66 {renderFichasEnCelda("cell-66")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-3">3 {renderFichasEnCelda("cell-3")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-2">- {renderFichasEnCelda("path-amarillo-2")}</td>
                         <td colSpan={2} id="cell-65">65 {renderFichasEnCelda("cell-65")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-4">4 {renderFichasEnCelda("cell-4")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-3">- {renderFichasEnCelda("path-amarillo-3")}</td>
                         <td colSpan={2} id="cell-64">64 {renderFichasEnCelda("cell-64")}</td>
                     </tr>
-            
+
                     <tr>
                         <td className="amarillo" colSpan={2} id="start-amarillo">5 {renderFichasEnCelda("start-amarillo")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-4">-{renderFichasEnCelda("path-amarillo-4")}</td>
                         <td colSpan={2} id="seguro-cell-63">O {renderFichasEnCelda("cell-63")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-6">6 {renderFichasEnCelda("cell-6")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-5">- {renderFichasEnCelda("path-amarillo-5")}</td>
                         <td colSpan={2} id="cell-62">62 {renderFichasEnCelda("cell-62")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-7">7 {renderFichasEnCelda("cell-7")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-6">- {renderFichasEnCelda("path-amarillo-6")}</td>
                         <td colSpan={2} id="cell-61">61 {renderFichasEnCelda("cell-61")}</td>
                     </tr>
-            
+
                     <tr>
                         <td rowSpan={2} id="cell-16">16 {renderFichasEnCelda("cell-16")}</td>
                         <td rowSpan={2} id="cell-15">15 {renderFichasEnCelda("cell-15")}</td>
@@ -335,13 +246,13 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                         <td rowSpan={2} id="cell-53">53 {renderFichasEnCelda("cell-53")}</td>
                         <td rowSpan={2} id="cell-52">52 {renderFichasEnCelda("cell-52")}</td>
                     </tr>
-            
+
                     <tr>
                         <td id="cell-9">9 {renderFichasEnCelda("cell-9")}</td>
                         <td colSpan={4} rowSpan={4} id="center">CENTRO {renderFichasEnCelda("center")}</td>
                         <td id="cell-59">59 {renderFichasEnCelda("cell-59")}</td>
                     </tr>
-            
+
                     <tr>
                         <td rowSpan={2} className="seguro" id="seguro-cell-17">O {renderFichasEnCelda("seguro-cell-17")}</td>
                         <td className="azul" rowSpan={2} id="path-azul-1">| {renderFichasEnCelda("path-azul-1")}</td>
@@ -360,12 +271,12 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                         <td className="verde" rowSpan={2} id="path-verde-1">| {renderFichasEnCelda("path-verde-1")}</td>
                         <td rowSpan={2} className="seguro" id="seguro-cell-51">O {renderFichasEnCelda("seguro-cell-51")}</td>
                     </tr>
-            
+
                     <tr>
                         <td className="azul">|</td>
                         <td className="verde">|</td>
                     </tr>
-            
+
                     <tr>
                         <td rowSpan={2} id="cell-18">18 {renderFichasEnCelda("cell-18")}</td>
                         <td rowSpan={2} id="cell-19">19 {renderFichasEnCelda("cell-19")}</td>
@@ -384,24 +295,24 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                         <td rowSpan={2} id="cell-49">49 {renderFichasEnCelda("cell-49")}</td>
                         <td rowSpan={2} id="cell-50">50 {renderFichasEnCelda("cell-50")}</td>
                     </tr>
-            
+
                     <tr>
                         <td id="vacio"></td>
                         <td id="cell-26">26 {renderFichasEnCelda("cell-26")}</td>
                         <td className="rojo" id="path-rojo-7" >- {renderFichasEnCelda("path-rojo-7")}</td>
-                        <td className="rojo" id="path-rojo-AA">-</td>                        
+                        <td className="rojo" id="path-rojo-AA">-</td>
                         <td id="cell-42">42 {renderFichasEnCelda("cell-42")}</td>
                         <td id="vacio"></td>
                     </tr>
-            
+
                     <tr>
                         <td
                             className="azul"
                             colSpan={7}
                             rowSpan={7}
                             id="home-azul"
-                            style={{verticalAlign: "top", padding: "5px"}}
-                            >
+                            style={{ verticalAlign: "top", padding: "5px" }}
+                        >
                             {renderFichasEnCelda("home-azul")}
                         </td>
                         <td colSpan={2} id="cell-27">27 {renderFichasEnCelda("cell-27")}</td>
@@ -412,42 +323,42 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                             colSpan={7}
                             rowSpan={7}
                             id="home-rojo"
-                            style={{verticalAlign: "top", padding: "5px"}}
-                            >
+                            style={{ verticalAlign: "top", padding: "5px" }}
+                        >
                             {renderFichasEnCelda("home-rojo")}
                         </td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-28">28 {renderFichasEnCelda("cell-28")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-5">- {renderFichasEnCelda("path-rojo-5")}</td>
                         <td colSpan={2} id="cell-40">40 {renderFichasEnCelda("cell-40")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} className="seguro" id="seguro-cell-29">O {renderFichasEnCelda("seguro-cell-29")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-4">- {renderFichasEnCelda("path-rojo-4")}</td>
                         <td className="rojo" colSpan={2} id="start-rojo">39 {renderFichasEnCelda("start-rojo")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-30">30 {renderFichasEnCelda("cell-30")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-3">- {renderFichasEnCelda("path-rojo-3")}</td>
                         <td colSpan={2} id="cell-38">38 {renderFichasEnCelda("cell-38")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-31">31 {renderFichasEnCelda("cell-31")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-2">- {renderFichasEnCelda("path-rojo-2")}</td>
                         <td colSpan={2} id="cell-37">37 {renderFichasEnCelda("cell-37")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-32">32 {renderFichasEnCelda("cell-32")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-1">- {renderFichasEnCelda("path-rojo-1")}</td>
                         <td colSpan={2} id="cell-36">36 {renderFichasEnCelda("cell-36")}</td>
                     </tr>
-            
+
                     <tr>
                         <td colSpan={2} id="cell-33">33 {renderFichasEnCelda("cell-33")}</td>
                         <td colSpan={2} className="seguro" id="seguro-cell-34">O {renderFichasEnCelda("seguro-cell-34")}</td>
@@ -455,10 +366,10 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) =
                     </tr>
                 </tbody>
             </table>
-            
-            
-            </>
-            );
+
+
+        </>
+    );
 });
 
 export default TableroParchis;

@@ -361,6 +361,9 @@ function dameRecorridoFicha(ficha) {
     return recorridoTablero;
 }
 
+export function esMiTurno(ficha, turno) {
+    return ficha[5] == turno;
+}
 
 function esFichaEnemiga(ficha1, ficha2) {
     return ficha1[5] !== ficha2[5]; // jugador diferente
