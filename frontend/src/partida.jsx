@@ -171,6 +171,11 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                     pasarTurno(dado);
                 }
 */
+                const nuevoTurno = (turnoActual === jugadores) ? 1 : (turnoActual + 1);
+                setTurnoActual(nuevoTurno);
+
+                sendTurno(nuevoTurno, dado);
+
                 setRolling(false);
             }, 500);
         } catch (err) {
