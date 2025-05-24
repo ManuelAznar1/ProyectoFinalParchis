@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
     socket.on('join', async (data, callback) => {
 
         try {
-            const {codigo, usuario} = data;
+            const {codigo, usuario, jugadores} = data;
             if (!usuario || !codigo) {
                 return callback({error: 'Parámetros inválidos'});
             }
@@ -70,18 +70,21 @@ io.on('connection', (socket) => {
             const posicionesJsonString = JSON.stringify(posicionesIniciales);
 
             await db.execute(
-                    'INSERT IGNORE INTO partidas (codigo, status, current_turn, posiciones, creada_en) VALUES (?, ? ,?, ?, NOW())',
-                    [codigo, 'creada', 1, posicionesJsonString]
+                    'INSERT IGNORE INTO partidas (codigo, status, current_turn, posiciones, jugadores, creada_en) VALUES (?, ? ,?, ?, ?, NOW())',
+                    [codigo, 'creada', 1, posicionesJsonString, jugadores]
                     );
 
-            const [partidaRows] = await db.execute('SELECT id, codigo FROM partidas WHERE codigo = ?', [codigo]);
+            const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
             const partida = partidaRows[0];
 
             const [jugadorRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE  partida_id = ?', [partida.id]);
             const numJugadores = jugadorRow[0]?.num_jugadores;
-
+            
+            console.log('partida.jugadores: ' + partida.jugadores);
+            console.log('numJugadores: ' + numJugadores);
+            
             // Ya no hay hueco
-            if (numJugadores === 4){
+            if (numJugadores === partida.jugadores){
                 return callback({error: 'Ya esta completa la partida'});
             }
 
@@ -104,7 +107,7 @@ io.on('connection', (socket) => {
 
             sendPartida(io, partida.codigo);
 
-            callback({success: true});
+            callback({success: true, numJugador: nuevoJugador});
         } catch (err) {
             console.error(err);
             callback({error: 'Error interno del servidor'});
@@ -221,29 +224,9 @@ async function sendRoomList(target) {
 
 
 async function sendPartida(target, partida) {
-    const [partidaRow] = await db.execute('SELECT id, codigo, status, current_turn, creada_en, dice, posiciones FROM partidas WHERE codigo = ?', [partida]);
+    const [partidaRow] = await db.execute('SELECT id, codigo, status, current_turn, creada_en, dice, posiciones, jugadores FROM partidas WHERE codigo = ?', [partida]);
     target.emit('send partida', partidaRow[0]);
 }
-
-
-// =======================
-// CONEXIÓN A BASE DE DATOS
-// =======================
-/*
- const db = mysql.createConnection({
- host: process.env.DB_HOST || 'localhost',
- user: process.env.DB_USER || 'root',
- password: process.env.DB_PASSWORD || 'root',
- database: process.env.DB_NAME || 'parchis'
- });
- db.connect((err) => {
- if (err) {
- console.error('Error al conectar a la base de datos:', err);
- return;
- }
- console.log('Conectado a la base de datos MySQL');
- });
- */
 
 
 

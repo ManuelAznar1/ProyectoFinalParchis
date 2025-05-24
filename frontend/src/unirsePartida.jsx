@@ -2,20 +2,30 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function UnirsePartida( {codigoPartida, usuario, onIniciarPartida, socket}) {
-    const [codigo, setCodigo] = useState(codigoPartida);
+function UnirsePartida( {usuario, onIniciarPartida, socket}) {
+    const [codigo, setCodigo] = useState('');
 
     const joinPartida = (codigo) => {
         if (codigo.trim()) {
 
-            socket.emit('join', {codigo, usuario}, (response) => {
+            const jugadores = 2;
+            let resultCallback = '';
+            socket.emit('join', {codigo, usuario, jugadores}, (response) => {
                 if (response.error) {
                     console.error('Error:', response.error);
+                    resultCallback=response.error;
                 } else {
                     console.log('Éxito:', response);
+                    
+                    // TODO Aqui obtengo el numero de jugador que soy
+                    // response.numJugador
+                    // Aqui guardarlo en algun sitio
+                    // El que crea la partida tiene que guardarse que es el jugador1
+                    
                 }
             });
 
+            return resultCallback;
         }
     };
 
@@ -27,9 +37,14 @@ function UnirsePartida( {codigoPartida, usuario, onIniciarPartida, socket}) {
 
         console.log('Intentando unirse a la partida con código: ' + codigo);
 
-        joinPartida(codigo);
+        let result = joinPartida(codigo);
 
-        onIniciarPartida(codigo);
+        if (result === ''){
+            onIniciarPartida(codigo);
+        }else{
+            // TODO Pintar un mensaje de que no puede unirse a la partida
+            alert(result);
+        }
 
     };
 

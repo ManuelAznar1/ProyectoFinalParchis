@@ -48,6 +48,8 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(msg.dice);
                 }
+                
+                jugadores = msg.jugadores;
             }
         });
 
@@ -246,7 +248,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 </button>
             </div>
             {/* --- TABLERO --- */}
-            <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha}  onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje}/>
+            <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje}/>
 
         </div>
     );

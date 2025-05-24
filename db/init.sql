@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS partidas (
     creada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dice INT,       
     posiciones TEXT,
+    jugadores INT DEFAULT 2,
   UNIQUE KEY `codigo_UNIQUE` (`codigo`)    
 );
 
@@ -28,7 +29,7 @@ CREATE TABLE IF NOT EXISTS jugadores (
     nickname VARCHAR(255) NOT NULL,
     posicion INT DEFAULT 0,
     color INT NOT NULL, 
-    partida_id INT,
+    partida_id INT ,
     FOREIGN KEY (partida_id) REFERENCES partidas(id) ON DELETE CASCADE
 );
 

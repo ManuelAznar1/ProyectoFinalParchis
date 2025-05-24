@@ -16,7 +16,7 @@ function CrearPartida( { modo, onIniciarPartida, usuario, socket }) {
 
     const joinPartida = (codigo) => {
         if (codigo.trim()) {
-            socket.emit('join', {codigo, usuario}, (response) => {
+            socket.emit('join', {codigo, usuario, jugadores}, (response) => {
                 if (response.error) {
                     console.error('Error:', response.error);
                 } else {
