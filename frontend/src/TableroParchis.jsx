@@ -1,63 +1,68 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import "./TableroParchis.css"; // Asumiendo que tendrás aquí los estilos
-import { posicionesIniciales, moverFichaLocal } from "./logicaParchis"; // Importa la lógica del juego
+import { posicionesIniciales, moverFichaTablero } from "./logicaParchis"; // Importa la lógica del juego
 
 
-const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
+const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones }, ref) => {
     const [posiciones, setPosiciones] = useState(posicionesIniciales);
     const [dado, setDado] = useState(null);
     const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
     const [turnoActual, setTurnoActual] = useState(1);
 
-    
-  useImperativeHandle(ref, () => ({
-    recibirDado(valor) {
-      console.log("Recibido en TableroParchis:", valor);
-        setDado(valor);
-        setFichaSeleccionada(null);
-    },
 
-    recibirTurno(turnoJugador) {
-      console.log("Recibido en TablerooParchis turno:", turnoJugador);
-        setTurnoActual(turnoJugador);
-    },
-    
-    moverFichaDesdeSocket(fichaSeleccionada, posicion) {
-      console.log("Recibido en TableroParchis - ficha: " + fichaSeleccionada + " , posicion: " + posicion);
+    useImperativeHandle(ref, () => ({
+            recibirDado(valor) {
+                console.log("Recibido en TableroParchis:", valor);
+                setDado(valor);
+                setFichaSeleccionada(null);
+            },
+
+            recibirTurno(turnoJugador) {
+                console.log("Recibido en TablerooParchis turno:", turnoJugador);
+                setTurnoActual(turnoJugador);
+            },
+            
+            cambiarPosicionesDesdeSocket(posiciones) {
+                console.log("Recibido en Tablero Parchis posiciones:", posiciones);
+                setPosiciones(posiciones);
+            },            
+
+            moverFichaDesdeSocket(fichaSeleccionada, posicion) {
+                console.log("Recibido en TableroParchis - ficha: " + fichaSeleccionada + " , posicion: " + posicion);
 //      setFichaSeleccionada(idFicha);
-        let recorridoTablero = recorridoTableroAmarillo;
-        if (fichaSeleccionada.startsWith("ficha4")) {
-            recorridoTablero = recorridoTableroAzul;
-        } else if (fichaSeleccionada.startsWith("ficha3")) {
-            recorridoTablero = recorridoTableroRojo;
-        } else if (fichaSeleccionada.startsWith("ficha2")) {
-            recorridoTablero = recorridoTableroVerde;
-        }
+                let recorridoTablero = recorridoTableroAmarillo;
+                if (fichaSeleccionada.startsWith("ficha4")) {
+                    recorridoTablero = recorridoTableroAzul;
+                } else if (fichaSeleccionada.startsWith("ficha3")) {
+                    recorridoTablero = recorridoTableroRojo;
+                } else if (fichaSeleccionada.startsWith("ficha2")) {
+                    recorridoTablero = recorridoTableroVerde;
+                }
 
-        const posActual = posiciones[fichaSeleccionada];
-        const indiceActual = recorridoTablero.indexOf(posActual);
+                const posActual = posiciones[fichaSeleccionada];
+                const indiceActual = recorridoTablero.indexOf(posActual);
 
-        let indiceNuevo = posicion;
+                let indiceNuevo = posicion;
 
-        if (indiceNuevo >= recorridoTablero.length) {
-            indiceNuevo = recorridoTablero.length - 1;
-        }
+                if (indiceNuevo >= recorridoTablero.length) {
+                    indiceNuevo = recorridoTablero.length - 1;
+                }
 
-        console.log('Movimiento Remoto: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
+                console.log('Movimiento Remoto: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
 
-        const nuevaPos = recorridoTablero[indiceNuevo];
-        console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
+                const nuevaPos = recorridoTablero[indiceNuevo];
+                console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
 
-        setPosiciones({
-            ...posiciones,
-            [fichaSeleccionada]: nuevaPos,
-        });
+                setPosiciones({
+                    ...posiciones,
+                    [fichaSeleccionada]: nuevaPos,
+                });
 
-        setDado(null);
-        setFichaSeleccionada(null);
+                setDado(null);
+                setFichaSeleccionada(null);
 
-    }    
-  }));
+            }
+        }));
 
 
     useEffect(() => {
@@ -72,29 +77,56 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
     }
 
     function seleccionarFicha(idFicha) {
-        
-        console.log('seleccionarFicha - idFicha: ' + idFicha + ' , '+ turnoActual);
-        
-        setFichaSeleccionada(idFicha);        
+
+        console.log('seleccionarFicha - idFicha: ' + idFicha + ' , ' + turnoActual);
+
+        setFichaSeleccionada(idFicha);
         /*
-          Para poder probar hasta que funcione bien lo de los turnos no se mira de quien es
-          
-        if (idFicha.startsWith("ficha4") && turnoActual === 4) {
-            setFichaSeleccionada(idFicha);
-        } else if (idFicha.startsWith("ficha3") && turnoActual === 3) {
-            setFichaSeleccionada(idFicha);
-        } else if (idFicha.startsWith("ficha2") && turnoActual === 2) {
-            setFichaSeleccionada(idFicha);
-        } else if (idFicha.startsWith("ficha1") && turnoActual === 1) {
-            setFichaSeleccionada(idFicha);
-        } else {
-            alert('No es el turno de este jugador');
-        }
+         Para poder probar hasta que funcione bien lo de los turnos no se mira de quien es
+         
+         if (idFicha.startsWith("ficha4") && turnoActual === 4) {
+         setFichaSeleccionada(idFicha);
+         } else if (idFicha.startsWith("ficha3") && turnoActual === 3) {
+         setFichaSeleccionada(idFicha);
+         } else if (idFicha.startsWith("ficha2") && turnoActual === 2) {
+         setFichaSeleccionada(idFicha);
+         } else if (idFicha.startsWith("ficha1") && turnoActual === 1) {
+         setFichaSeleccionada(idFicha);
+         } else {
+         alert('No es el turno de este jugador');
+         }
+         
+         */
         
-        */
+        moverFichaLocal(idFicha);
     }
 
-    function moverFichaLocal() {
+    function moverFichaLocal(fichaSeleccionada) {
+        if (!fichaSeleccionada) {
+            alert("Selecciona una ficha para mover");
+            return;
+        }
+        if (!dado) {
+            alert("Tira el dado antes de mover");
+            return;
+        }
+
+        let posicionesNuevas = moverFichaTablero(posiciones, fichaSeleccionada, dado);
+
+        setPosiciones(posicionesNuevas);
+        
+        console.log('posiciones a mandar: ' + posicionesNuevas);
+
+        onCambiarPosiciones(fichaSeleccionada, posicionesNuevas);
+
+        setDado(null);
+        setFichaSeleccionada(null);
+
+
+    }
+    
+    
+    function moverFichaViejo() {
         if (!fichaSeleccionada) {
             alert("Selecciona una ficha para mover");
             return;
@@ -153,10 +185,6 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
         const nuevaPos = recorridoTablero[indiceNuevo];
         console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
 
-
-
-
-        
         setPosiciones({
             ...posiciones,
             [fichaSeleccionada]: nuevaPos,
@@ -166,7 +194,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
 
         setDado(null);
         setFichaSeleccionada(null);
-    }
+    }    
 
     function renderFichasEnCelda(idCelda) {
 
@@ -187,7 +215,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                                 key={fichaId}
                                 id={fichaId}
                                 className={`ficha ${color}`}
-                                onClick={() => seleccionarFicha(fichaId)}
+                                onClick={() => {seleccionarFicha(fichaId);}}
                                 style={{
                                         cursor: "pointer",
                                         border: fichaSeleccionada === fichaId ? "2px solid black" : "none",
@@ -213,8 +241,8 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
 
     return (
             <>          
-            <div style={{ float: "right"}}>
-
+            <div style={{float: "right"}}>
+                {dado !== null && <span style={{marginLeft: "1em"}}>Dado: {dado}</span>}            
                 <button onClick={() => setDado(1)}>1</button>
                 <button onClick={() => setDado(2)}>2</button>
                 <button onClick={() => setDado(3)}>3</button>
@@ -222,9 +250,6 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                 <button onClick={() => setDado(5)}>5</button>
                 <button onClick={() => setDado(6)}>6</button>
 
-
-                <button onClick={moverFichaLocal}>Mover ficha</button>
-                {dado !== null && <span style={{marginLeft: "1em"}}>Dado: {dado}</span>}
             </div>            
             <table border="1">
                 <tbody>
@@ -402,7 +427,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                     <tr>
                         <td colSpan={2} className="seguro" id="seguro-cell-29">O {renderFichasEnCelda("seguro-cell-29")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-4">- {renderFichasEnCelda("path-rojo-4")}</td>
-                        <td className="rojo" colSpan={2} id="start-rojo">39 {renderFichasEnCelda("cell-39")}</td>
+                        <td className="rojo" colSpan={2} id="start-rojo">39 {renderFichasEnCelda("start-rojo")}</td>
                     </tr>
             
                     <tr>
@@ -430,8 +455,8 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                     </tr>
                 </tbody>
             </table>
-
-
+            
+            
             </>
             );
 });

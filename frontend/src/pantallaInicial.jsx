@@ -42,6 +42,17 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     setVista('partida');
   };
 
+  const handleIniciarPartidaOnline = (codigo, jugadores) => {
+    setCodigoPartida(codigo);
+    setJugadores(jugadores);
+    setModoJuego('online');    
+    console.log('jugadores:' + jugadores);
+    console.log('modo:' + modoJuego);
+    console.log('codigo:' + codigo);
+    
+    setVista('partida');
+  };
+  
 const Navbar = () => (
   <nav className="navbar">
     <div className="nav-left">
@@ -62,11 +73,12 @@ const Navbar = () => (
   </nav>
 );
 
+
   if (vista === 'crear') {
     return (
       <div>
         <Navbar />
-        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} socket={socket} />
+        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} socket={socket} usuario={usuario?.nombre} />
         <button className="custom-button" onClick={() => setVista('elegirModo')}>Volver</button>
       </div>
     );
@@ -100,7 +112,7 @@ const Navbar = () => (
     return (
       <div>
         <Navbar />
-        <UnirsePartida onIniciarPartida={handleIniciarPartida} socket={socket} />
+        <UnirsePartida onIniciarPartida={handleIniciarPartidaOnline} socket={socket} usuario={usuario?.nombre}/>
         <button className="custom-button" onClick={volverMenu}>Volver</button>
       </div>
     );

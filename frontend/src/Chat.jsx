@@ -41,13 +41,22 @@ function Chat({socket, codigo, usuario}) {
 //      socket.off('send turn');      
     };
   }, [partida]);
-
-  const joinPartida = (codigo) => {
-    if (partida.trim()) {
-      socket.emit('join', { codigo: codigo });
-      setJoined(true);
-    }
-  };
+  
+//
+//  const joinPartida = (codigo) => {
+//    if (partida.trim()) {
+//      
+//            socket.emit('join', {codigo, usuario}, (response) => {
+//                if (response.error) {
+//                    console.error('Error:', response.error);
+//                } else {
+//                    console.log('Éxito:', response);
+//                }
+//            });
+//            
+//      setJoined(true);
+//    }
+//  };
 
 
   return (

@@ -34,6 +34,11 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
                 setTurnoActual(msg.current_turn);
                 setDice(msg.dice);
+                
+                if (tableroRef.current) {      
+                    const posiciones = JSON.parse(msg.posiciones);
+                    tableroRef.current.cambiarPosicionesDesdeSocket(posiciones);
+                }
 
 
             } else {
@@ -58,12 +63,28 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
             }
 
         });
+        
+        socket.on('send cambiar posiciones', (msg) => {
+
+            if (msg.partida === codigo && msg.user !== usuario?.nombre) {
+                console.log('posiciones en remoto para mi por moviento ficha ('+msg.ficha+') : ' + msg.posiciones);
+
+                if (tableroRef.current) {
+                    tableroRef.current.cambiarPosicionesDesdeSocket(msg.posiciones);
+                }
+
+                // TODO Aqui habria como mover la ficha del tablero
+            } else {
+                console.log('posiciones recibidas: IGNORADO');
+            }
+
+        });        
 
         return () => {
             socket.off('send turn');
             socket.off('send partida');
             socket.off('send mover ficha');
-
+            socket.off('send cambiar posiciones');
         };
     }, []);
 
@@ -87,6 +108,18 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
         socket.emit('send mover ficha', { partida: codigo, user: usuarioNombre, ficha, anteriorPosicion, nuevaPosicion });
     }
+    
+    function onCambiarPosiciones(fichaSeleccionada, posiciones) {
+        sendCambiarPosiciones(fichaSeleccionada, posiciones);
+    }
+
+    function sendCambiarPosiciones(fichaSeleccionada, posiciones) {
+        const usuarioNombre = usuario?.nombre;
+
+        console.log('enviando cambiar posiciones -  posiciones: ' + posiciones);
+
+        socket.emit('send cambiar posiciones', { partida: codigo, user: usuarioNombre, ficha: fichaSeleccionada, posiciones });
+    }    
 
     const rollDice = async () => {
         setRolling(true);
@@ -173,7 +206,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 </button>
             </div>
             {/* --- TABLERO --- */}
-            <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} />
+            <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha}  onCambiarPosiciones={onCambiarPosiciones}/>
         </div>
     );
 }

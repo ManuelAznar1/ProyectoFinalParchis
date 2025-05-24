@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS partidas (
     current_turn INT,    
     creada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dice INT,       
+    posiciones TEXT,
   UNIQUE KEY `codigo_UNIQUE` (`codigo`)    
 );
 

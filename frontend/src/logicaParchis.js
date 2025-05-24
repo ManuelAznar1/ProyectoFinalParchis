@@ -18,7 +18,6 @@ export const posicionesIniciales = {
     ficha43: "home-azul",
     ficha44: "home-azul",
 };
-
 // Recorrido completo del tablero en orden (simplificado, añadir según tu diseño)
 const recorridoTableroAmarillo = [
     // Amarillo empieza aquí
@@ -367,43 +366,27 @@ function esFichaEnemiga(ficha1, ficha2) {
     return ficha1[5] !== ficha2[5]; // jugador diferente
 }
 
-function avanzarCasillas(posicionActual, cantidad) {
-    const match = posicionActual.match(/^cell-(\d+)$/);
-    if (!match) return posicionActual; // si no está en una cell, no avanza
 
-    let numero = parseInt(match[1]);
-    let nuevaPos = numero + cantidad;
-    return `cell-${String(nuevaPos).padStart(2, '0')}`;
-}
-
-function retrocederCasillas(posicionActual, cantidad = 1) {
-    const match = posicionActual.match(/^cell-(\d+)$/);
-    if (!match) return posicionActual;
-
-    let numero = parseInt(match[1]);
-    let nuevaPos = Math.max(1, numero - cantidad);
-    return `cell-${String(nuevaPos).padStart(2, '0')}`;
-}
 
 function esCeldaSegura(posicion) {
     return posicion.startsWith("seguro-") || posicion.startsWith("start-");
 }
 
-function avanzarFicha(posiciones, ficha, nuevaPosicion) {
-    const colisiones = verificarColision(posiciones,ficha, nuevaPosicion);
+function avanzarFicha(recorridoTablero, posiciones, ficha, nuevaPosicion) {
+    const colisiones = verificarColision(posiciones, ficha, nuevaPosicion);
 
     // Verificar si hay ya 2 fichas del mismo color en la nueva posición
     const mismoColor = colisiones.filter(f => !esFichaEnemiga(ficha, f));
 
     if (mismoColor.length >= 2 || colisiones.length > 1) {
-        const posicionAnterior = retrocederCasillas(nuevaPosicion);
+        const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPosicion);
         console.log(`⚠️ ${ficha} no puede entrar a ${nuevaPosicion} (2 fichas del mismo color). Retrocede a ${posicionAnterior}.`);
         moverFicha(posiciones, ficha, posicionAnterior);
         return;
     }
 
     if (!puedoAvanzar(ficha, nuevaPosicion)) {
-        const posicionAnterior = retrocederCasillas(nuevaPosicion);
+        const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPosicion);
         console.log(`⚠️ ${ficha} no puede avanzar a ${nuevaPosicion} hay un PUENTE. Retrocede a ${posicionAnterior}.`);
         moverFicha(posiciones, ficha, posicionAnterior);
         return;
@@ -420,7 +403,7 @@ function avanzarFicha(posiciones, ficha, nuevaPosicion) {
 
         const jugador = ficha[5];
 
-        const nuevaPosExtra = avanzarCasillas(nuevaPosicion, 20);
+        const nuevaPosExtra = avanzarCasillas(recorridoTablero, nuevaPosicion, 20);
         console.log(`Jugador ${jugador} (${obtenerColor(ficha)}) gana 20 casillas y se mueve a ${nuevaPosExtra}.`);
 
         nuevaPosicion = nuevaPosExtra;
@@ -446,7 +429,8 @@ function mostrarEstadoTablero(posiciones) {
     const estado = {};
 
     for (const [ficha, posicion] of Object.entries(posiciones)) {
-        if (!estado[posicion]) estado[posicion] = [];
+        if (!estado[posicion])
+            estado[posicion] = [];
         estado[posicion].push(ficha);
     }
 
@@ -456,8 +440,8 @@ function mostrarEstadoTablero(posiciones) {
 
 function obtenerFichasEnPosicion(posiciones, posicion) {
     return Object.entries(posiciones)
-        .filter(([, pos]) => pos === posicion)
-        .map(([ficha]) => ficha);
+            .filter(([, pos]) => pos === posicion)
+            .map(([ficha]) => ficha);
 }
 
 function verificarColision(posiciones, ficha, nuevaPosicion) {
@@ -479,12 +463,13 @@ function moverFicha(posiciones, ficha, nuevaPosicion) {
     posiciones[ficha] = nuevaPosicion;
 }
 
-function hayDosFichasMismoJugador(posicionObjetivo) {
+function hayDosFichasMismoJugador(posiciones, posicionObjetivo) {
     const fichas = Object.entries(posiciones)
-        .filter(([, pos]) => pos === posicionObjetivo)
-        .map(([ficha]) => ficha);
+            .filter(([, pos]) => pos === posicionObjetivo)
+            .map(([ficha]) => ficha);
 
-    if (fichas.length !== 2) return false;
+    if (fichas.length !== 2)
+        return false;
 
     const jugador1 = fichas[0][5]; // 6º carácter indica el jugador: ficha11, ficha21, etc.
     const jugador2 = fichas[1][5];
@@ -493,7 +478,7 @@ function hayDosFichasMismoJugador(posicionObjetivo) {
 }
 
 
-function puedoAvanzar(ficha, nuevaPosicion) {
+function puedoAvanzar(posiciones, ficha, nuevaPosicion) {
 
     const recorridoFicha = dameRecorridoFicha(ficha);
 
@@ -507,7 +492,7 @@ function puedoAvanzar(ficha, nuevaPosicion) {
     for (var i = 1; i <= distancia; i++) {
         const posicionIntermedia = recorridoFicha[posicionActualIndex + i];
 
-        if (hayDosFichasMismoJugador(posicionIntermedia)) {
+        if (hayDosFichasMismoJugador(posiciones, posicionIntermedia)) {
             return false;
         }
     }
@@ -524,7 +509,7 @@ function estaFichaEnCasa(posiciones, ficha) {
     return false;
 }
 
-export function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
+export function moverFichaTablero(posiciones, fichaSeleccionada, dado) {
 
     const recorridoTablero = dameRecorridoFicha(fichaSeleccionada);
 
@@ -538,10 +523,27 @@ export function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
     } else if (estaFichaEnCasa(posiciones, fichaSeleccionada) && dado == 5) {
 
         const indiceNuevo = 0;
-
         const nuevaPos = recorridoTablero[indiceNuevo];
 
-        posiciones[fichaSeleccionada] = nuevaPos;
+        if (hayDosFichasMismoJugador(posiciones, nuevaPos)) {
+            console.log(`⚠️ ${fichaSeleccionada} no puede salir de casa (2 fichas del mismo color).`);
+
+        } else {
+
+            const colisiones = verificarColision(posiciones, fichaSeleccionada, nuevaPos);
+
+            // Verificar si hay ya 2 fichas del mismo color en la nueva posición
+            const mismoColor = colisiones.filter(f => !esFichaEnemiga(fichaSeleccionada, f));
+
+            if (mismoColor.length >= 2 || colisiones.length > 1) {
+                const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPos);
+                console.log(`⚠️ ${fichaSeleccionada} no puede entrar a ${nuevaPos} (2 fichas del mismo color). Retrocede a ${posicionAnterior}.`);
+                moverFicha(posiciones, fichaSeleccionada, posicionAnterior);
+                return;
+            }
+
+            posiciones[fichaSeleccionada] = nuevaPos;
+        }
 
     } else {
 
@@ -551,13 +553,13 @@ export function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
             indiceNuevo = recorridoTablero.length - 1;
         }
         const nuevaPos = recorridoTablero[indiceNuevo];
-        
+
 
         console.log('Movimiento: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
 
         console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
 
-        avanzarFicha(posiciones, fichaSeleccionada, nuevaPos);
+        avanzarFicha(recorridoTablero, posiciones, fichaSeleccionada, nuevaPos);
 
     }
 
@@ -566,3 +568,23 @@ export function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
 }
 
 
+function avanzarCasillas(recorridoTablero, posicionActual, cantidad) {
+
+    const indiceActual = recorridoTablero.indexOf(posicionActual);
+    let indiceNuevo = indiceActual + cantidad;
+
+    if (indiceNuevo >= recorridoTablero.length) {
+        indiceNuevo = recorridoTablero.length - 1;
+    }
+    const nuevaPos = recorridoTablero[indiceNuevo];
+    return nuevaPos;
+}
+
+function retrocederCasillas(recorridoTablero, posicionActual, cantidad = 1) {
+
+    const indiceActual = recorridoTablero.indexOf(posicionActual);
+    let indiceNuevo = indiceActual - cantidad;
+
+    const nuevaPos = recorridoTablero[indiceNuevo];
+    return nuevaPos;
+}

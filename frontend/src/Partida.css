@@ -116,7 +116,7 @@ img {
   position: absolute;
   top: 150px; /* Exactamente como pediste */
   left: 0;
-  width: 100%;
+  /*width: 100%;*/
 }
 
 /* ESTILOS RESTANTES (totalmente originales) */
