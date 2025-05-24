@@ -303,3 +303,66 @@ body.modo-oscuro .form-box strong {
   color: white;
 }
 
+/* Para pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 10px;
+  }
+
+  .nav-left, .nav-right {
+    flex: 100%;
+    justify-content: center;
+    margin: 5px 0;
+  }
+
+  .nav-center {
+    position: static;
+    transform: none;
+    font-size: 20px;
+    margin: 5px 0;
+  }
+
+  .logo {
+    height: 60px;
+  }
+
+  .form-container {
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+  }
+
+  input, .custom-button {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .custom-button {
+    padding: 10px;
+    width: 100%;
+  }
+}
+
+/* Para tablets y pantallas medianas */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .logo {
+    height: 70px;
+  }
+
+  .nav-center {
+    font-size: 22px;
+  }
+
+  .form-container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 25px;
+  }
+}
+
