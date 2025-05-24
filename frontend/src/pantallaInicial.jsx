@@ -85,7 +85,7 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     return (
       <div>
         <Navbar />
-        <CambiarContraseña volver={volverMenu} />
+        <CambiarContraseña volver={volverMenu}  usuario={usuario} />
       </div>
     );
   }

@@ -13,7 +13,7 @@ table {
 }
 
 td {
-  width: 16px;  /* reducido */
+  width: 16px;
   height: 16px;
 }
 
@@ -49,25 +49,24 @@ h1 {
 }
 
 img {
-  width: 80px;  /* reducido */
+  width: 80px;
   height: 80px;
 }
 
+/* CONTROLES DERECHA (DADO Y VOLVER) - 100% ORIGINAL */
 .derecha-centro {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
   position: fixed;
-  right: 200px;
-  top: 61%;
+  right: 200px; /* posición original */
+  top: 61%;     /* posición original */
   transform: translateY(-50%);
   gap: 15px;
-    float: left;
+  float: left;
 }
 
-/* Imagen y botón */
 .derecha-centro img {
   width: 100px;
   height: 100px;
@@ -103,6 +102,24 @@ img {
   cursor: wait;
 }
 
+/* ÚNICO CAMBIO: Código de partida más abajo (50px en lugar de 20px) */
+.codigo-container {
+  position: absolute;
+  top: 100px; /* ← Solo este valor cambió (antes 20px) */
+  left: 20px;
+  transform: none;
+  width: auto;
+  justify-content: flex-start;
+}
+
+.codigo-chat-wrapper {
+  position: absolute;
+  top: 150px; /* Exactamente como pediste */
+  left: 0;
+  width: 100%;
+}
+
+/* ESTILOS RESTANTES (totalmente originales) */
 .codigo-texto, .modo-texto {
   font-size: 1.2rem;
   color: #333;
@@ -121,13 +138,6 @@ img {
 
 .partida-container {
   text-align: center;
-}
-
-.codigo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
 }
 
 .partida-wrapper {

@@ -1,18 +1,46 @@
 // CambiarContraseña.js
 import React, { useState } from 'react';
 
-function CambiarContraseña({ volver }) {
+function CambiarContraseña({ volver, usuario }) {
   const [contraseñaActual, setContraseñaActual] = useState('');
   const [nuevaContraseña, setNuevaContraseña] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const manejarCambio = (e) => {
-    e.preventDefault();
-    // Aquí iría una petición al backend para actualizar la contraseña
-    console.log('Contraseña actual:', contraseñaActual);
-    console.log('Nueva contraseña:', nuevaContraseña);
-    alert('✅ Contraseña cambiada (simulado)');
-    volver(); // Vuelve a la vista anterior
-  };
+const manejarCambio = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const response = await fetch('http://localhost:3001/cambiar-contrasena', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usuario: usuario.nombre,
+        contraseñaActual,
+        nuevaContraseña
+      }),
+    });
+
+    const text = await response.text(); // primero lee como texto
+    console.log('Respuesta cruda del servidor:', text);
+
+    // luego intenta parsear JSON
+    const data = JSON.parse(text);
+
+    if (data.exito) {
+      alert('✅ Contraseña cambiada correctamente');
+      volver();
+    } else {
+      alert(`❌ Error: ${data.mensaje || 'No se pudo cambiar la contraseña'}`);
+    }
+  } catch (error) {
+    console.error(error);
+    alert('❌ Error de conexión con el servidor o respuesta inválida');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="form-container">
@@ -24,6 +52,7 @@ function CambiarContraseña({ volver }) {
           value={contraseñaActual}
           onChange={(e) => setContraseñaActual(e.target.value)}
           required
+          disabled={loading}
         />
         <input
           type="password"
@@ -31,12 +60,16 @@ function CambiarContraseña({ volver }) {
           value={nuevaContraseña}
           onChange={(e) => setNuevaContraseña(e.target.value)}
           required
+          disabled={loading}
         />
-        <button type="submit" className="custom-button">Guardar Contraseña</button>
+        <button type="submit" className="custom-button" disabled={loading}>
+          {loading ? 'Guardando...' : 'Guardar Contraseña'}
+        </button>
       </form>
-      <button className="custom-button" onClick={volver}>Volver</button>
+      <button className="custom-button" onClick={volver} disabled={loading}>Volver</button>
     </div>
   );
 }
+
 
 export default CambiarContraseña;

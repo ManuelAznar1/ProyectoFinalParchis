@@ -28,8 +28,6 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
-
-
 // =======================
 // INICIAR SERVIDOR
 // =======================
@@ -237,6 +235,45 @@ app.post('/iniciar-sesion', async (req, res) => {
   } catch (err) {
     console.error('Error en iniciar-sesion:', err);
     res.status(500).json({ error: 'Error al buscar el usuario' });
+  }
+});
+
+app.post('/cambiar-contrasena', async (req, res) => {
+  const { usuario, contraseñaActual, nuevaContraseña } = req.body;
+
+  if (!usuario || !contraseñaActual || !nuevaContraseña) {
+    return res.status(400).json({ exito: false, mensaje: 'Faltan datos' });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      'SELECT id, contrasena FROM usuarios WHERE nombre = ?',
+      [usuario]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ exito: false, mensaje: 'Usuario no encontrado' });
+    }
+
+    const usuarioDB = rows[0];
+    const esCorrecta = await bcrypt.compare(contraseñaActual, usuarioDB.contrasena);
+
+    if (!esCorrecta) {
+      return res.status(401).json({ exito: false, mensaje: 'Contraseña actual incorrecta' });
+    }
+
+    const nuevaHasheada = await bcrypt.hash(nuevaContraseña, 10);
+
+    await db.execute(
+      'UPDATE usuarios SET contrasena = ? WHERE id = ?',
+      [nuevaHasheada, usuarioDB.id]
+    );
+
+    res.json({ exito: true, mensaje: 'Contraseña actualizada exitosamente' });
+
+  } catch (error) {
+    console.error('Error al cambiar contraseña:', error);
+    res.status(500).json({ exito: false, mensaje: 'Error interno del servidor' });
   }
 });
 

@@ -9,6 +9,12 @@
   user-select: none;
 }
 
+/* Añade esto a tu CSS */
+table {
+  margin-left: 550px !important;  /* Fuerza el desplazamiento */
+  margin-top: 35px !important;    /* baja la tabla */
+}
+
 .casilla {
   width: 48px;
   height: 48px;

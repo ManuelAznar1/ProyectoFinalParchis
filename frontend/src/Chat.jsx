@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './App.css';
 
 function Chat({socket, codigo, usuario}) {
   const [messages, setMessages] = useState([]);
@@ -75,7 +76,7 @@ function Chat({socket, codigo, usuario}) {
             onKeyDown={e => e.key === 'Enter' && sendMessage()}
             placeholder="Escribe tu mensaje"
           />
-          <button onClick={sendMessage}>Enviar</button>
+          <button className="custom-button" onClick={sendMessage}>Enviar</button>
     </div>
     
   );
