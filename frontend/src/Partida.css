@@ -112,6 +112,13 @@ img {
   justify-content: flex-start;
 }
 
+.codigo-chat-wrapper {
+  position: absolute;
+  top: 150px; /* Exactamente como pediste */
+  left: 0;
+  /*width: 100%;*/
+}
+
 /* ESTILOS RESTANTES (totalmente originales) */
 .codigo-texto, .modo-texto {
   font-size: 1.2rem;
