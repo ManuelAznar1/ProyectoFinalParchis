@@ -133,42 +133,49 @@ input {
 }
 
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
   background-color: #00bcd4;
-  padding: 10px 20px;
   color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.nav-left,
-.nav-center,
-.nav-right {
+  padding: 10px 20px;
+  height: 80px;
   display: flex;
   align-items: center;
 }
 
 .nav-left {
-  flex: 1; /* Ocupa un tercio */
-}
-
-.nav-center {
-  flex: 1; /* Ocupa un tercio */
-  justify-content: center;
-}
-
-.nav-right {
   flex: 1;
-  justify-content: flex-end;
   display: flex;
   align-items: center;
 }
 
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none; /* para que no interfiera con clicks */
+}
+
+.nav-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-right .usuario-nombre {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
 .nav-right .custom-button {
-  margin-right: 0;
-  margin-left: auto;
-  width: auto; /* Opcional: para que no ocupe todo el ancho */
+  width: auto;
+  padding: 8px 16px;
+  margin: 0;
 }
 
 .navbar h2 {

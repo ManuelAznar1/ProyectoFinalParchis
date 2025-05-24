@@ -42,19 +42,25 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     setVista('partida');
   };
 
-  const Navbar = () => (
-    <nav className="navbar">
-      <div className="nav-left">
-        <img src={logo} alt="Logo" className="logo" />
-      </div>
-      <div className="nav-center">
-        <h2>Parchis</h2>
-      </div>
-      <div className="nav-right">
-        <button className="custom-button" onClick={onLogout}>Salir</button>
-      </div>
-    </nav>
-  );
+const Navbar = () => (
+  <nav className="navbar">
+    <div className="nav-left">
+      <img src={logo} alt="Logo" className="logo" />
+    </div>
+    <div className="nav-center">
+      <h2>Parchis</h2>
+    </div>
+    <div className="nav-right">
+      {/* Mostrar nombre de usuario si existe */}
+      {usuario && usuario.nombre && (
+        <span className="usuario-nombre" style={{ gap: '15px', fontWeight: 'bold' }}>
+          Hola, {usuario.nombre}
+        </span>
+      )}
+      <button className="custom-button" onClick={onLogout}>Salir</button>
+    </div>
+  </nav>
+);
 
   if (vista === 'crear') {
     return (

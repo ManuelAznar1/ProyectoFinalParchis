@@ -12,7 +12,7 @@
 /* Añade esto a tu CSS */
 table {
   margin-left: 550px !important;  /* Fuerza el desplazamiento */
-  margin-top: 35px !important;    /* baja la tabla */
+  margin-top: 45px !important;    /* baja la tabla */
 }
 
 .casilla {
