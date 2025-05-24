@@ -59,13 +59,11 @@ img {
   align-items: center;
   justify-content: center;
   
-/*  
   position: fixed;
   right: 200px;
   top: 61%;
   transform: translateY(-50%);
   gap: 15px;
-*/
     float: left;
 }
 
