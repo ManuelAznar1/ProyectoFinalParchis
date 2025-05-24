@@ -133,14 +133,19 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
     return (
         <div>
+            {modo} - {codigo} - {jugadores} jugadores
 
-            {
-                <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre} />
-            }
+            {modo === 'online' && (
+                <>
+                    <div className="codigo-container" style={{ textAlign: 'center' }}>
+                        {mostrarInfoPartida}
+                    </div>
 
-            <div className="codigo-container" style={{ textAlign: 'center' }}>
-                {mostrarInfoPartida}
-            </div>
+                    <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre} />
+                </>
+            )}
+
+
 
             {/* Contenedor dado + botón Volver a la derecha, centrado verticalmente */}
             <div className="derecha-centro">

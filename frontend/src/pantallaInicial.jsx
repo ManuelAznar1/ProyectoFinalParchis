@@ -6,33 +6,30 @@ import UnirsePartida from './unirsePartida';
 import Partida from './partida';
 import Perfil from './perfil';
 import ElegirModoJuego from './elegirModoJuego';
+import CambiarContraseña from './cambiarContraseña';
 
 function PantallaInicial({ onLogout, usuario, socket }) {
   const [vista, setVista] = useState('menu');
   const [modoOscuro, setModoOscuro] = useState(false);
   const [codigoPartida, setCodigoPartida] = useState(null);
   const [modoJuego, setModoJuego] = useState(null);
+  const [jugadores, setJugadores] = useState(null);
 
   useEffect(() => {
-    if (modoOscuro) {
-      document.body.classList.add('modo-oscuro');
-    } else {
-      document.body.classList.remove('modo-oscuro');
-    }
+    document.body.classList.toggle('modo-oscuro', modoOscuro);
   }, [modoOscuro]);
 
-  const toggleModoOscuro = () => {
-    setModoOscuro(prev => !prev);
-  };
-
+  const toggleModoOscuro = () => setModoOscuro(prev => !prev);
   const volverMenu = () => {
     setCodigoPartida(null);
+    setJugadores(null);
     setModoJuego(null);
     setVista('menu');
   };
 
-  const handleIniciarPartida = (codigo) => {
+  const handleIniciarPartida = (codigo, jugadores) => {
     setCodigoPartida(codigo);
+    setJugadores(jugadores);
     setVista('partida');
   };
 
@@ -50,62 +47,12 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     </nav>
   );
 
-  if (vista === 'crear') {
+  // NUEVA VISTA CAMBIAR CONTRASEÑA
+  if (vista === 'cambiarContraseña') {
     return (
       <div>
         <Navbar />
-        <CrearPartida modo={modoJuego} onIniciarPartida={handleIniciarPartida} socket={socket} />
-        <button className="custom-button" onClick={() => setVista('elegirModo')}>Volver</button>
-      </div>
-    );
-  }
-
-  if (vista === 'elegirModo') {
-    return (
-      <div>
-        <Navbar />
-        <ElegirModoJuego
-          onElegirModo={(modo) => {
-            setModoJuego(modo);
-            setVista('crear');
-          }}
-          volver={volverMenu}
-        />
-      </div>
-    );
-  }
-
-  if (vista === 'unirse') {
-    return (
-      <div>
-        <Navbar />
-        <UnirsePartida onIniciarPartida={handleIniciarPartida} socket={socket} />
-        <button className="custom-button" onClick={volverMenu}>Volver</button>
-      </div>
-    );
-  }
-
-  if (vista === 'partida') {
-    return (
-      <div>
-        <Navbar />
-        <Partida 
-          socket={socket}
-          volverMenu={volverMenu} 
-          codigo={codigoPartida} 
-          modo={modoJuego} 
-          usuario={usuario}
-        />
-      </div>
-    );
-  }
-
-  if (vista === 'perfil') {
-    return (
-      <div>
-        <Navbar />
-        <Perfil usuario={usuario} />
-        <button className="custom-button" onClick={volverMenu}>Volver</button>
+        <CambiarContraseña volver={() => setVista('opciones')} />
       </div>
     );
   }
@@ -116,7 +63,7 @@ function PantallaInicial({ onLogout, usuario, socket }) {
         <Navbar />
         <div className="form-container">
           <h1>Opciones</h1>
-          <button className="custom-button">Cambiar Contraseña</button>
+          <button className="custom-button" onClick={() => setVista('cambiarContraseña')}>Cambiar Contraseña</button>
           <button className="custom-button">Idioma</button>
           <button className="custom-button" onClick={toggleModoOscuro}>
             {modoOscuro ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
@@ -144,3 +91,4 @@ function PantallaInicial({ onLogout, usuario, socket }) {
 }
 
 export default PantallaInicial;
+

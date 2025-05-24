@@ -239,7 +239,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                             {renderFichasEnCelda("home-amarillo")}
                         </td>
                         <td colSpan={2} id="cell-1">1 {renderFichasEnCelda("cell-1")}</td>
-                        <td colSpan={2} id="seguro-cell-68">68 {renderFichasEnCelda("cell-68")}</td>
+                        <td colSpan={2} id="seguro-cell-68">O {renderFichasEnCelda("cell-68")}</td>
                         <td colSpan={2} id="cell-67">67 {renderFichasEnCelda("cell-67")}</td>
                         <td
                             className="verde"
@@ -273,7 +273,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                     <tr>
                         <td className="amarillo" colSpan={2} id="start-amarillo">5 {renderFichasEnCelda("start-amarillo")}</td>
                         <td className="amarillo" colSpan={2} id="path-amarillo-4">-{renderFichasEnCelda("path-amarillo-4")}</td>
-                        <td colSpan={2} id="seguro-cell-63">63 {renderFichasEnCelda("cell-63")}</td>
+                        <td colSpan={2} id="seguro-cell-63">O {renderFichasEnCelda("cell-63")}</td>
                     </tr>
             
                     <tr>
@@ -293,7 +293,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                         <td rowSpan={2} id="cell-15">15 {renderFichasEnCelda("cell-15")}</td>
                         <td rowSpan={2} id="cell-14">14 {renderFichasEnCelda("cell-14")}</td>
                         <td rowSpan={2} id="cell-13">13 {renderFichasEnCelda("cell-13")}</td>
-                        <td rowSpan={2} className="seguro" id="seguro-cell-12">12 {renderFichasEnCelda("seguro-cell-12")}</td>
+                        <td rowSpan={2} className="seguro" id="seguro-cell-12">O {renderFichasEnCelda("seguro-cell-12")}</td>
                         <td rowSpan={2} id="cell-11">11 {renderFichasEnCelda("cell-11")}</td>
                         <td rowSpan={2} id="cell-10">10 {renderFichasEnCelda("cell-10")}</td>
                         <td id="vacio"></td>
@@ -318,7 +318,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                     </tr>
             
                     <tr>
-                        <td rowSpan={2} className="seguro" id="seguro-cell-17">17 {renderFichasEnCelda("seguro-cell-17")}</td>
+                        <td rowSpan={2} className="seguro" id="seguro-cell-17">O {renderFichasEnCelda("seguro-cell-17")}</td>
                         <td className="azul" rowSpan={2} id="path-azul-1">| {renderFichasEnCelda("path-azul-1")}</td>
                         <td className="azul" rowSpan={2} id="path-azul-2">| {renderFichasEnCelda("path-azul-2")}</td>
                         <td className="azul" rowSpan={2} id="path-azul-3">| {renderFichasEnCelda("path-azul-3")}</td>
@@ -333,7 +333,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                         <td className="verde" rowSpan={2} id="path-verde-3">| {renderFichasEnCelda("path-verde-3")}</td>
                         <td className="verde" rowSpan={2} id="path-verde-2">| {renderFichasEnCelda("path-verde-2")}</td>
                         <td className="verde" rowSpan={2} id="path-verde-1">| {renderFichasEnCelda("path-verde-1")}</td>
-                        <td rowSpan={2} className="seguro" id="seguro-cell-51">51 {renderFichasEnCelda("seguro-cell-51")}</td>
+                        <td rowSpan={2} className="seguro" id="seguro-cell-51">O {renderFichasEnCelda("seguro-cell-51")}</td>
                     </tr>
             
                     <tr>
@@ -353,7 +353,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                         <td id="cell-43">43 {renderFichasEnCelda("cell-43")}</td>
                         <td rowSpan={2} id="cell-44">44 {renderFichasEnCelda("cell-44")}</td>
                         <td rowSpan={2} id="cell-45">45 {renderFichasEnCelda("cell-45")}</td>
-                        <td rowSpan={2} className="seguro" id="seguro-cell-46">46 {renderFichasEnCelda("seguro-cell-46")}</td>
+                        <td rowSpan={2} className="seguro" id="seguro-cell-46">O {renderFichasEnCelda("seguro-cell-46")}</td>
                         <td rowSpan={2} id="cell-47">47 {renderFichasEnCelda("cell-47")}</td>
                         <td rowSpan={2} id="cell-48">48 {renderFichasEnCelda("cell-48")}</td>
                         <td rowSpan={2} id="cell-49">49 {renderFichasEnCelda("cell-49")}</td>
@@ -400,7 +400,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
                     </tr>
             
                     <tr>
-                        <td colSpan={2} className="seguro" id="seguro-cell-29">29 {renderFichasEnCelda("seguro-cell-29")}</td>
+                        <td colSpan={2} className="seguro" id="seguro-cell-29">O {renderFichasEnCelda("seguro-cell-29")}</td>
                         <td className="rojo" colSpan={2} id="path-rojo-4">- {renderFichasEnCelda("path-rojo-4")}</td>
                         <td className="rojo" colSpan={2} id="start-rojo">39 {renderFichasEnCelda("cell-39")}</td>
                     </tr>
@@ -425,7 +425,7 @@ const TableroParchis = forwardRef(( { onMoverFicha }, ref) => {
             
                     <tr>
                         <td colSpan={2} id="cell-33">33 {renderFichasEnCelda("cell-33")}</td>
-                        <td colSpan={2} className="seguro" id="seguro-cell-34">34 {renderFichasEnCelda("seguro-cell-34")}</td>
+                        <td colSpan={2} className="seguro" id="seguro-cell-34">O {renderFichasEnCelda("seguro-cell-34")}</td>
                         <td colSpan={2} id="cell-35">35 {renderFichasEnCelda("cell-35")}</td>
                     </tr>
                 </tbody>

@@ -21,22 +21,22 @@ function CrearPartida({ modo, onIniciarPartida, socket }) {
   };  
 
   const crear = () => {
-    if (modo === 'amigos') {
+    if (modo === 'online') {
       const nuevoCodigo = generarCodigo();
       setCodigo(nuevoCodigo);
       
       joinPartida(nuevoCodigo)
       
-      onIniciarPartida(nuevoCodigo);
+      onIniciarPartida(nuevoCodigo, jugadores);
       
     } else {
-      onIniciarPartida(null);
+      onIniciarPartida(null, jugadores);
     }
   };
 
   return (
     <div className="form-container">
-      <h2>Crear Partida {modo === 'amigos' ? 'con Amigos' : 'vs CPU'}</h2>
+      <h2>Crear Partida ({modo})</h2>
       
       {/* Selector de jugadores para ambos modos */}
       <label>Cantidad de Jugadores:</label>
