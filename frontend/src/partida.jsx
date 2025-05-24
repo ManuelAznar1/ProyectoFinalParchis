@@ -204,7 +204,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '30px' }}>
                 {renderMensaje()}
             </div>
 

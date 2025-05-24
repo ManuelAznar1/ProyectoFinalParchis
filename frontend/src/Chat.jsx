@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import './Partida.css';
+
 
 function Chat({ socket, codigo, usuario }) {
   const [messages, setMessages] = useState([]);
@@ -78,29 +80,17 @@ function Chat({ socket, codigo, usuario }) {
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <input
-          style={{ flex: 1, marginRight: '8px', padding: '8px' }}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Escribe tu mensaje"
-        />
-        <button
-          className="custom-button"
-          onClick={sendMessage}
-          style={{
-            width: '70px',
-            height: '36px',
-            fontSize: '0.85rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          Enviar
-        </button>
-      </div>
+<div className="input-container">
+  <input
+    value={input}
+    onChange={(e) => setInput(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+    placeholder="Escribe tu mensaje"
+  />
+  <button className="custom-button enviar-btn" onClick={sendMessage}>
+    Enviar
+  </button>
+</div>
     </div>
 
   );
