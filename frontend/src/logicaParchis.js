@@ -521,7 +521,7 @@ export function moverFichaTablero(posiciones, fichaSeleccionada, dado) {
 
 
     if (estaFichaEnCasa(posiciones, fichaSeleccionada) && dado != 5) {
-        console.log("La ficha está en casa. Debes sacar ficha con un 5 para poder mover (no implementado aquí).");
+        throw new Error("La ficha está en casa. Debes sacar ficha con un 5 para poder mover (no implementado aquí).");
 
     } else if (estaFichaEnCasa(posiciones, fichaSeleccionada) && dado == 5) {
 
@@ -529,7 +529,7 @@ export function moverFichaTablero(posiciones, fichaSeleccionada, dado) {
         const nuevaPos = recorridoTablero[indiceNuevo];
 
         if (hayDosFichasMismoJugador(posiciones, nuevaPos)) {
-            console.log(`⚠️ ${fichaSeleccionada} no puede salir de casa (2 fichas del mismo color).`);
+            throw new Error(`⚠️ ${fichaSeleccionada} no puede salir de casa (2 fichas del mismo color).`);
 
         } else {
 
@@ -606,22 +606,31 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
 
         // La ficha está en casa y el dado NO es 5 ⇒ no puede moverse
         if (estaFichaEnCasa(posiciones, ficha) && dado !== 5) {
-            return { ficha, posicion: posicionActual, puedeMover: false };
+            return {ficha, posicion: posicionActual, puedeMover: false};
         }
 
         // La ficha está en casa y el dado es 5 ⇒ puede salir a su recorrido
         if (estaFichaEnCasa(posiciones, ficha) && dado === 5) {
-            return { ficha, posicion: recorridoFicha[0], puedeMover: true };
+            
+            const indiceNuevo = 0;
+            const nuevaPos = recorridoFicha[indiceNuevo];
+
+            if (hayDosFichasMismoJugador(posiciones, nuevaPos)) {
+                return;
+            }            
+            
+            return {ficha, posicion: recorridoFicha[0], puedeMover: true};
         }
+
 
         // Si la ficha está en el recorrido, intentamos avanzar
         const nuevaPosicion = avanzarCasillas(recorridoFicha, posicionActual, dado);
         const puedeMover = puedoAvanzar(posiciones, ficha, nuevaPosicion);
-        
-        if (puedeMover){
-            return { ficha, posicion: nuevaPosicion, puedeMover };            
+
+        if (puedeMover) {
+            return {ficha, posicion: nuevaPosicion, puedeMover};
         }
-        
+
         return;
     });
 

@@ -20,15 +20,6 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
 
 
     useEffect(() => {
-        
-//          setTimeout(() => {
-//                console.log('Inicializando partida...');
-//                if (tableroRef.current && codigo ==='') {
-//                    console.log('Reseteando tablero partida...');
-//
-//                    tableroRef.current.resetEstados();
-//                }        
-//          }, 0); // deja que React termine de montar        
 
 
         
@@ -37,11 +28,15 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
                 console.log('turno remoto para mi:' + msg.turnoActual);
                 setTurnoActual(msg.turnoActual);
                 setDice(msg.dado);
-                actualizar(msg.turnoActual);
+                actualizarMensaje('Turno de: ' + msg.turnoActual);
 
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(msg.dado);
                 }
+                
+                if (tableroRef.current) {
+                    tableroRef.current.recibirTurno(msg.turnoActual);
+                }                
             }
         });
 
@@ -192,7 +187,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
 
             sendTurno(turnoActual, dado);
 
-            const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(dado);
+            const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(turnoActual, dado);
             const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
             const cantidadDeMovimientos = movimientosPosibles.length;
 

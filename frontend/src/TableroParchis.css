@@ -245,3 +245,41 @@ table {
   /* Puedes agregar estilos si es necesario */
 }
 
+
+
+td.amarillo.horizontal {
+  position: relative; /* necesario para posicionar hijos absolutamente */
+}
+
+
+td.amarillo .numero {
+  position: absolute;
+  z-index: 1; /* debajo de las fichas */
+  bottom: 4px; /* o top: 4px, ajusta según necesidad */
+  left: 4px;
+  font-size: 14px;
+  color: #aaa; /* para que no distraiga demasiado */
+}
+
+.ficha {
+  position: relative; /* o absolute si quieres total control */
+  z-index: 2; /* por encima del número */
+}
+
+.horizontal {
+  position: relative; /* necesario para posicionar hijos absolutamente */
+}
+
+.vertical {
+  position: relative; /* necesario para posicionar hijos absolutamente */
+}
+
+
+.numero {
+  position: absolute;
+  z-index: 1; /* debajo de las fichas */
+  bottom: 4px; /* o top: 4px, ajusta según necesidad */
+  left: 4px;
+  font-size: 14px;
+  color: #aaa; /* para que no distraiga demasiado */
+}

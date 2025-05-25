@@ -77,11 +77,20 @@ io.on('connection', (socket) => {
             const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
             const partida = partidaRows[0];
 
-            const [numMismoJugadorPartidaRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE partida_id = ? AND nickname = ?', [partida.id, usuario]);
-            const numMismoJugador = numMismoJugadorPartidaRow[0]?.num_jugadores;
+            let nuevoJugador = 0;
+
+            const [jugadorPartidaRows] = await db.execute('SELECT color FROM jugadores WHERE partida_id = ? AND nickname = ?', [partida.id, usuario]);
+
+            if (jugadorPartidaRows.length > 0) {
+                console.log('este jugador ya estaba en la partida: ' + usuario);
+                nuevoJugador = jugadorPartidaRows[0]?.color;
+            } else {
+                console.log('este jugador NO estaba en la partida: ' + usuario);
+            }
+
 
             // Si no existe el jugador se tiene que unir
-            if (numMismoJugador === 0) {
+            if (nuevoJugador === 0) {
                 const [numJjugadorRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE  partida_id = ?', [partida.id]);
                 const numJugadores = numJjugadorRow[0]?.num_jugadores;
 
@@ -93,7 +102,7 @@ io.on('connection', (socket) => {
                     return callback({error: 'Ya esta completa la partida'});
                 }
 
-                const nuevoJugador = numJugadores + 1;
+                nuevoJugador = numJugadores + 1;
 
                 await db.execute(
                         'INSERT IGNORE INTO jugadores (nickname, partida_id, color) VALUES (?, ? ,?)',
@@ -114,7 +123,7 @@ io.on('connection', (socket) => {
 
             sendPartida(io, partida.codigo);
 
-            callback({success: true, numJugador: nuevoJugador});
+            callback({success: true, numJugador: nuevoJugador, messages: msgs});
         } catch (err) {
             console.error(err);
             callback({error: 'Error interno del servidor'});
@@ -122,6 +131,18 @@ io.on('connection', (socket) => {
 
     });
 
+    socket.on('get chat messages', async ({ codigo }) => {
+
+        const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
+        const partida = partidaRows[0];
+
+        const [msgs] = await db.execute(
+                'SELECT user, message, timestamp FROM mensajes WHERE partida_id = ? ORDER BY timestamp ASC',
+                [partida.id]
+                );
+        
+        socket.emit('chat history', {messages: msgs, description: partida.codigo});
+    });
 
 
     socket.on('chat message', async ({ partida, user, message }) => {

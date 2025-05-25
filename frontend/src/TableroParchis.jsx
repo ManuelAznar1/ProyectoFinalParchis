@@ -12,15 +12,8 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
 
     useImperativeHandle(ref, () => ({
         
-        resetEstados() {
-            setPosiciones(JSON.parse(JSON.stringify(posicionesIniciales)));
-            setDado(null);
-            setFichaSeleccionada(null);
-            setTurnoActual(1);
-          },        
-
-        verificarMovimientosPosibles(nuevoDado) {
-            return verificarMovimientosPosibles(posiciones, turnoActual, nuevoDado);
+        verificarMovimientosPosibles(turno, nuevoDado) {
+            return verificarMovimientosPosibles(posiciones, turno, nuevoDado);
         },
         
         recibirDado(valor) {
@@ -39,8 +32,8 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
             setPosiciones(posiciones);
         },
         
-        seleccionarFichaPartida(idFicha) {        
-           seleccionarFicha(idFicha);
+        seleccionarFichaPartida(idFicha, dado) {        
+           seleccionarFicha(idFicha, dado);
         },
 
         moverFichaDesdeSocket(fichaSeleccionada, posicion) {
@@ -80,14 +73,6 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
         }
     }));
     
-    useEffect(() => {
-        console.log("Reseteo interno del tablero:", posiciones);
-          console.log("Posiciones iniciales:", JSON.parse(JSON.stringify(posicionesIniciales)));        
-            setPosiciones(JSON.parse(JSON.stringify(posicionesIniciales)));
-            setDado(null);
-            setFichaSeleccionada(null);
-            setTurnoActual(1);        
-    },[]);    
 
     useEffect(() => {
         console.log("Posiciones actualizadas:", posiciones);
@@ -100,11 +85,11 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
         setFichaSeleccionada(null);
     }
 
-    function seleccionarFicha(idFicha) {
+    function seleccionarFicha(idFicha, dado) {
         if (esMiTurno(idFicha, turnoActual)) {
 
             setFichaSeleccionada(idFicha);
-            moverFichaLocal(idFicha);
+            moverFichaLocal(idFicha, dado);
 
 
         } else {
@@ -112,7 +97,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
         }
     }
 
-    function moverFichaLocal(fichaSeleccionada) {
+    function moverFichaLocal(fichaSeleccionada, dado) {
         if (!fichaSeleccionada) {
             onCambiarMensaje("Selecciona una ficha para mover");
             return;
@@ -155,7 +140,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                         key={fichaId}
                         id={fichaId}
                         className={`ficha ${color}`}
-                        onClick={() => seleccionarFicha(fichaId)}
+                        onClick={() => seleccionarFicha(fichaId, dado)}
                         style={{
                             cursor: "pointer",
                             border: fichaSeleccionada === fichaId ? "2px solid black" : "none",
@@ -188,7 +173,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                     {renderFichasEnCelda("home-amarillo")}
                   </td>
                   <td colSpan={2} id="cell-1" className="horizontal"><span className="numero">1</span> {renderFichasEnCelda("cell-1")}</td>
-                  <td colSpan={2} className="seguro horizontal" id="seguro-cell-68"><span className="numero">O</span> {renderFichasEnCelda("cell-68")}</td>
+                  <td colSpan={2} className="seguro horizontal" id="seguro-cell-68"><span className="numero">O</span> {renderFichasEnCelda("seguro-68")}</td>
                   <td colSpan={2} id="cell-67" className="horizontal"><span className="numero">67</span> {renderFichasEnCelda("cell-67")}</td>
                   <td className="verde" colSpan={7} rowSpan={7} id="home-verde" style={{ verticalAlign: "top", padding: "5px" }}>
                     {renderFichasEnCelda("home-verde")}
@@ -216,7 +201,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                 <tr>
                   <td className="amarillo horizontal" colSpan={2} id="start-amarillo"><span className="numero">5</span> {renderFichasEnCelda("start-amarillo")}</td>
                   <td className="amarillo horizontal" colSpan={2} id="path-amarillo-4"><span className="numero">-</span> {renderFichasEnCelda("path-amarillo-4")}</td>
-                  <td colSpan={2} className="seguro horizontal" id="seguro-cell-63"><span className="numero">O</span> {renderFichasEnCelda("cell-63")}</td>
+                  <td colSpan={2} className="seguro horizontal" id="seguro-cell-63"><span className="numero">O</span> {renderFichasEnCelda("seguro-cell-63")}</td>
                 </tr>
 
                 <tr>
