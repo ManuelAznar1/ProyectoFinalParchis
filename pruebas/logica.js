@@ -1,6 +1,6 @@
 // Se inicializa así el juego
 
-const posicionesIniciales = {
+export const posicionesIniciales = {
     ficha11: "home-amarillo",
     ficha12: "home-amarillo",
     ficha13: "home-amarillo",
@@ -18,7 +18,6 @@ const posicionesIniciales = {
     ficha43: "home-azul",
     ficha44: "home-azul",
 };
-
 // Recorrido completo del tablero en orden (simplificado, añadir según tu diseño)
 const recorridoTableroAmarillo = [
     // Amarillo empieza aquí
@@ -272,7 +271,6 @@ const recorridoTableroVerde = [
     "cell-58",
     "cell-59",
     "cell-60",
-
     "cell-61",
     "cell-62",
     "seguro-cell-63",
@@ -285,7 +283,6 @@ const recorridoTableroVerde = [
     "cell-2",
     "cell-3",
     "cell-4",
-    // Amarillo empieza aquí
     "start-amarillo",
     "cell-6",
     "cell-7",
@@ -362,48 +359,35 @@ function dameRecorridoFicha(ficha) {
     return recorridoTablero;
 }
 
+export function esMiTurno(ficha, turno) {
+    return ficha[5] == turno;
+}
 
 function esFichaEnemiga(ficha1, ficha2) {
     return ficha1[5] !== ficha2[5]; // jugador diferente
 }
 
-function avanzarCasillas(posicionActual, cantidad) {
-    const match = posicionActual.match(/^cell-(\d+)$/);
-    if (!match) return posicionActual; // si no está en una cell, no avanza
 
-    let numero = parseInt(match[1]);
-    let nuevaPos = numero + cantidad;
-    return `cell-${String(nuevaPos).padStart(2, '0')}`;
-}
-
-function retrocederCasillas(posicionActual, cantidad = 1) {
-    const match = posicionActual.match(/^cell-(\d+)$/);
-    if (!match) return posicionActual;
-
-    let numero = parseInt(match[1]);
-    let nuevaPos = Math.max(1, numero - cantidad);
-    return `cell-${String(nuevaPos).padStart(2, '0')}`;
-}
 
 function esCeldaSegura(posicion) {
     return posicion.startsWith("seguro-") || posicion.startsWith("start-");
 }
 
-function avanzarFicha(posiciones, ficha, nuevaPosicion) {
-    const colisiones = verificarColision(posiciones,ficha, nuevaPosicion);
+function avanzarFicha(recorridoTablero, posiciones, ficha, nuevaPosicion) {
+    const colisiones = verificarColision(posiciones, ficha, nuevaPosicion);
 
     // Verificar si hay ya 2 fichas del mismo color en la nueva posición
     const mismoColor = colisiones.filter(f => !esFichaEnemiga(ficha, f));
 
     if (mismoColor.length >= 2 || colisiones.length > 1) {
-        const posicionAnterior = retrocederCasillas(nuevaPosicion);
+        const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPosicion);
         console.log(`⚠️ ${ficha} no puede entrar a ${nuevaPosicion} (2 fichas del mismo color). Retrocede a ${posicionAnterior}.`);
         moverFicha(posiciones, ficha, posicionAnterior);
         return;
     }
 
     if (!puedoAvanzar(ficha, nuevaPosicion)) {
-        const posicionAnterior = retrocederCasillas(nuevaPosicion);
+        const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPosicion);
         console.log(`⚠️ ${ficha} no puede avanzar a ${nuevaPosicion} hay un PUENTE. Retrocede a ${posicionAnterior}.`);
         moverFicha(posiciones, ficha, posicionAnterior);
         return;
@@ -420,7 +404,7 @@ function avanzarFicha(posiciones, ficha, nuevaPosicion) {
 
         const jugador = ficha[5];
 
-        const nuevaPosExtra = avanzarCasillas(nuevaPosicion, 20);
+        const nuevaPosExtra = avanzarCasillas(recorridoTablero, nuevaPosicion, 20);
         console.log(`Jugador ${jugador} (${obtenerColor(ficha)}) gana 20 casillas y se mueve a ${nuevaPosExtra}.`);
 
         nuevaPosicion = nuevaPosExtra;
@@ -446,7 +430,8 @@ function mostrarEstadoTablero(posiciones) {
     const estado = {};
 
     for (const [ficha, posicion] of Object.entries(posiciones)) {
-        if (!estado[posicion]) estado[posicion] = [];
+        if (!estado[posicion])
+            estado[posicion] = [];
         estado[posicion].push(ficha);
     }
 
@@ -456,8 +441,8 @@ function mostrarEstadoTablero(posiciones) {
 
 function obtenerFichasEnPosicion(posiciones, posicion) {
     return Object.entries(posiciones)
-        .filter(([, pos]) => pos === posicion)
-        .map(([ficha]) => ficha);
+            .filter(([, pos]) => pos === posicion)
+            .map(([ficha]) => ficha);
 }
 
 function verificarColision(posiciones, ficha, nuevaPosicion) {
@@ -479,12 +464,13 @@ function moverFicha(posiciones, ficha, nuevaPosicion) {
     posiciones[ficha] = nuevaPosicion;
 }
 
-function hayDosFichasMismoJugador(posicionObjetivo) {
+function hayDosFichasMismoJugador(posiciones, posicionObjetivo) {
     const fichas = Object.entries(posiciones)
-        .filter(([, pos]) => pos === posicionObjetivo)
-        .map(([ficha]) => ficha);
+            .filter(([, pos]) => pos === posicionObjetivo)
+            .map(([ficha]) => ficha);
 
-    if (fichas.length !== 2) return false;
+    if (fichas.length !== 2)
+        return false;
 
     const jugador1 = fichas[0][5]; // 6º carácter indica el jugador: ficha11, ficha21, etc.
     const jugador2 = fichas[1][5];
@@ -493,7 +479,7 @@ function hayDosFichasMismoJugador(posicionObjetivo) {
 }
 
 
-function puedoAvanzar(ficha, nuevaPosicion) {
+function puedoAvanzar(posiciones, ficha, nuevaPosicion) {
 
     const recorridoFicha = dameRecorridoFicha(ficha);
 
@@ -507,7 +493,7 @@ function puedoAvanzar(ficha, nuevaPosicion) {
     for (var i = 1; i <= distancia; i++) {
         const posicionIntermedia = recorridoFicha[posicionActualIndex + i];
 
-        if (hayDosFichasMismoJugador(posicionIntermedia)) {
+        if (hayDosFichasMismoJugador(posiciones, posicionIntermedia)) {
             return false;
         }
     }
@@ -524,7 +510,7 @@ function estaFichaEnCasa(posiciones, ficha) {
     return false;
 }
 
-function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
+export function moverFichaTablero(posiciones, fichaSeleccionada, dado) {
 
     const recorridoTablero = dameRecorridoFicha(fichaSeleccionada);
 
@@ -538,10 +524,27 @@ function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
     } else if (estaFichaEnCasa(posiciones, fichaSeleccionada) && dado == 5) {
 
         const indiceNuevo = 0;
-
         const nuevaPos = recorridoTablero[indiceNuevo];
 
-        posiciones[fichaSeleccionada] = nuevaPos;
+        if (hayDosFichasMismoJugador(posiciones, nuevaPos)) {
+            console.log(`⚠️ ${fichaSeleccionada} no puede salir de casa (2 fichas del mismo color).`);
+
+        } else {
+
+            const colisiones = verificarColision(posiciones, fichaSeleccionada, nuevaPos);
+
+            // Verificar si hay ya 2 fichas del mismo color en la nueva posición
+            const mismoColor = colisiones.filter(f => !esFichaEnemiga(fichaSeleccionada, f));
+
+            if (mismoColor.length >= 2 || colisiones.length > 1) {
+                const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPos);
+                console.log(`⚠️ ${fichaSeleccionada} no puede entrar a ${nuevaPos} (2 fichas del mismo color). Retrocede a ${posicionAnterior}.`);
+                moverFicha(posiciones, fichaSeleccionada, posicionAnterior);
+                return;
+            }
+
+            posiciones[fichaSeleccionada] = nuevaPos;
+        }
 
     } else {
 
@@ -551,13 +554,13 @@ function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
             indiceNuevo = recorridoTablero.length - 1;
         }
         const nuevaPos = recorridoTablero[indiceNuevo];
-        
+
 
         console.log('Movimiento: indiceActual=' + indiceActual + ', dado=' + dado + ' --> indiceNuevo=' + indiceNuevo);
 
         console.log('fichaSeleccionada: ' + fichaSeleccionada + ', nuevaPos:' + nuevaPos);
 
-        avanzarFicha(posiciones, fichaSeleccionada, nuevaPos);
+        avanzarFicha(recorridoTablero, posiciones, fichaSeleccionada, nuevaPos);
 
     }
 
@@ -566,25 +569,100 @@ function moverFichaLocal(posiciones, fichaSeleccionada, dado) {
 }
 
 
+function avanzarCasillas(recorridoTablero, posicionActual, cantidad) {
+
+    const indiceActual = recorridoTablero.indexOf(posicionActual);
+    let indiceNuevo = indiceActual + cantidad;
+
+    if (indiceNuevo >= recorridoTablero.length) {
+        indiceNuevo = recorridoTablero.length - 1;
+    }
+    const nuevaPos = recorridoTablero[indiceNuevo];
+    return nuevaPos;
+}
+
+function retrocederCasillas(recorridoTablero, posicionActual, cantidad = 1) {
+
+    const indiceActual = recorridoTablero.indexOf(posicionActual);
+    let indiceNuevo = indiceActual - cantidad;
+
+    const nuevaPos = recorridoTablero[indiceNuevo];
+    return nuevaPos;
+}
+
+
+export function verificarMovimientosPosibles(posiciones, turno, dado) {
+    // Filtra las fichas que pertenecen al jugador del turno actual
+    const fichas = Object.keys(posiciones).filter(f => f.startsWith(`ficha${turno}`));
+
+    // Opcional: para debug
+    console.log(`Fichas del jugador ${turno}:`, fichas);
+
+    const movimientosPosibles = fichas.map(ficha => {
+        const posicionActual = posiciones[ficha];
+        const recorridoFicha = dameRecorridoFicha(ficha);
+        const indiceActual = recorridoFicha.indexOf(posicionActual);
+
+        // La ficha está en casa y el dado NO es 5 ⇒ no puede moverse
+        if (estaFichaEnCasa(posiciones, ficha) && dado !== 5) {
+            return { ficha, posicion: posicionActual, puedeMover: false };
+        }
+
+        // La ficha está en casa y el dado es 5 ⇒ puede salir a su recorrido
+        if (estaFichaEnCasa(posiciones, ficha) && dado === 5) {
+            return { ficha, posicion: recorridoFicha[0], puedeMover: true };
+        }
+
+        // Si la ficha está en el recorrido, intentamos avanzar
+        const nuevaPosicion = avanzarCasillas(recorridoFicha, posicionActual, dado);
+        const puedeMover = puedoAvanzar(posiciones, ficha, nuevaPosicion);
+        return { ficha, posicion: nuevaPosicion, puedeMover };
+    });
+
+    return movimientosPosibles;
+}
+
 console.log('Inicio');
 
 let posiciones = { ...posicionesIniciales }
 
 
-//avanzarFicha('ficha24', 'cell-1');
+verificarMovimientosPosibles(posiciones, 1, 6).forEach(mov => {
+    console.log(`Ficha: ${mov.ficha}, Posición: ${mov.posicion}, Puede mover: ${mov.puedeMover}`);
+});
 
-posiciones = moverFichaLocal(posiciones, 'ficha11', 5);
 
-mostrarEstadoTablero(posiciones);
-
-posiciones = moverFichaLocal(posiciones, 'ficha11', 5);
 
 mostrarEstadoTablero(posiciones);
 
-posiciones = moverFichaLocal(posiciones, 'ficha11', 6);
+posiciones = moverFichaTablero(posiciones, 'ficha11', 5);
+
+posiciones = moverFichaTablero(posiciones, 'ficha12', 5);
 
 mostrarEstadoTablero(posiciones);
 
+posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
+mostrarEstadoTablero(posiciones);
+
+posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
+mostrarEstadoTablero(posiciones);
+
+posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
+mostrarEstadoTablero(posiciones);
+
+posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
+mostrarEstadoTablero(posiciones);
+
+//posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
+
+
+
+verificarMovimientosPosibles(posiciones, 2, 6).forEach(mov => {
+    console.log(`Ficha: ${mov.ficha}, Posición: ${mov.posicion}, Puede mover: ${mov.puedeMover}`);
+});
+
+
+mostrarEstadoTablero(posiciones);
 
 
 console.log('Final');

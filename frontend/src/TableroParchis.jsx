@@ -77,8 +77,13 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
 
     function seleccionarFicha(idFicha) {
         if (esMiTurno(idFicha, turnoActual)) {
+
+            
+            //if ()
             setFichaSeleccionada(idFicha);
             moverFichaLocal(idFicha);
+
+
         } else {
             onCambiarMensaje("No es tu turno para mover esta ficha");
         }
@@ -132,7 +137,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                             margin: "2px",
                             padding: "4px",
                             borderRadius: "50%",
-                            display: "inline-block",
+                            display: "inline",
                             backgroundColor: color,
                             color: "white",
                             userSelect: "none",

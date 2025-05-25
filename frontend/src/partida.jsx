@@ -93,10 +93,12 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
 
     const pasarTurno = (dado = null) => {
-        const nuevoTurno = (turnoActual % jugadores) + 1;
+
+        const nuevoTurno = (turnoActual === jugadores) ? 1 : (turnoActual + 1);
+
+        //const nuevoTurno = (turnoActual % jugadores) + 1;
         setTurnoActual(nuevoTurno);
-        setDice(null);
-//        setPuedeMover(false);
+//        setDice(null);
         actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
     };
@@ -129,16 +131,11 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
         actualizarMensaje(nuevoMensaje);   
     };
 
-/*    
+    
     const verificarMovimientosPosibles = (dado) => {
-        const fichasJugador = tableroRef.current?.obtenerFichasJugador(turnoActual);
-        const tablero = tableroRef.current?.estadoTablero;
-
-        if (!fichasJugador || !tablero) return false;
-
-        socket.emit('send mover ficha', { partida: codigo, user: usuarioNombre, ficha, anteriorPosicion, nuevaPosicion });
+        return true;
     }
- */
+
 
     function onCambiarPosiciones(fichaSeleccionada, posiciones) {
         sendCambiarPosiciones(fichaSeleccionada, posiciones);
@@ -165,20 +162,18 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(dado);
                 }
-/*
+
                 const hayMovimientos = verificarMovimientosPosibles(dado);
                 setPuedeMover(hayMovimientos);
+
+                sendTurno(turnoActual, dado);
 
                 if (!hayMovimientos) {
                     pasarTurno(dado);
                 }
-*/
-                const nuevoTurno = (turnoActual === jugadores) ? 1 : (turnoActual + 1);
-                setTurnoActual(nuevoTurno);
-
-                sendTurno(nuevoTurno, dado);
 
                 setRolling(false);
+
             }, 500);
         } catch (err) {
             console.error("Error al lanzar el dado:", err);
