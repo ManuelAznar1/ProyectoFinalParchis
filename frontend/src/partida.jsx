@@ -4,13 +4,13 @@ import axios from 'axios';
 import Chat from './Chat';
 import TableroParchis from './TableroParchis';
 
-function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
+function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, numJugador }) {
     const [dice, setDice] = useState(null);
     const [rolling, setRolling] = useState(false);
     const [turnoActual, setTurnoActual] = useState(1);
     const [mensaje, setMensaje] = useState('');
     const [dadoYaTirado, setDadoYaTirado] = useState(false);
-    
+
     const tableroRef = useRef();
 
     const coloresJugadores = {
@@ -79,7 +79,6 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
                     tableroRef.current.cambiarPosicionesDesdeSocket(msg.posiciones);
                 }
 
-                // TODO Aqui habria como mover la ficha del tablero
             } else {
                 console.log('posiciones recibidas: IGNORADO');
             }
@@ -294,7 +293,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
                     </button>
                 </div>
                 {/* --- TABLERO --- */}
-                <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje}/>
+                <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje} numJugador={numJugador}/>
             
             </div>
             );

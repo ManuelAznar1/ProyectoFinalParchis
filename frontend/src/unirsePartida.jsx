@@ -33,20 +33,20 @@ function UnirsePartida( {usuario, onIniciarPartida, socket}) {
             let resultCallback = '';
             const respuesta = await enviarMensajeSincrono('join', {codigo, usuario, jugadores});
 
-            if (respuesta.error) {
-                console.error('Error:', respuesta.error);
-                resultCallback=respuesta.error;
-            } else {
-                console.log('Éxito:', respuesta);
+//            if (respuesta.error) {
+//                console.error('Error:', respuesta.error);
+//                resultCallback=respuesta.error;
+//            } else {
+//                console.log('Éxito:', respuesta);
+//
+//                // TODO Aqui obtengo el numero de jugador que soy
+//                // response.numJugador
+//                // Aqui guardarlo en algun sitio
+//                // El que crea la partida tiene que guardarse que es el jugador1
+//
+//            }
 
-                // TODO Aqui obtengo el numero de jugador que soy
-                // response.numJugador
-                // Aqui guardarlo en algun sitio
-                // El que crea la partida tiene que guardarse que es el jugador1
-
-            }
-
-            return resultCallback;
+            return respuesta;
         }
     };
 
@@ -60,13 +60,18 @@ function UnirsePartida( {usuario, onIniciarPartida, socket}) {
 
 
         joinPartida(codigo)
-            .then(result => {
-            if (result === ''){
-                onIniciarPartida(codigo);
-            }else{
+            .then(respuesta => {
+                
+            if (respuesta.error) {
                 // TODO Pintar un mensaje de que no puede unirse a la partida
                 alert(result);
-            }
+            } else {
+                console.log('Éxito:', respuesta);
+
+                onIniciarPartida(codigo, null, respuesta.numJugador);
+
+            }                
+
 
         });
 

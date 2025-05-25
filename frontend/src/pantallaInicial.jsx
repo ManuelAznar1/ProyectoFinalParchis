@@ -14,6 +14,7 @@ function PantallaInicial({ onLogout, usuario, socket }) {
   const [codigoPartida, setCodigoPartida] = useState(null);
   const [modoJuego, setModoJuego] = useState(null);
   const [jugadores, setJugadores] = useState(null);
+  const [numJugador, setNumJugador] = useState(null);  
 
   useEffect(() => {
     if (modoOscuro) {
@@ -42,12 +43,13 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     setVista('partida');
   };
 
-  const handleIniciarPartidaOnline = (codigo, jugadores) => {
+  const handleIniciarPartidaOnline = (codigo, jugadores, numJugador) => {
     setCodigoPartida(codigo);
     setJugadores(jugadores);
-    setModoJuego('online');    
+    setModoJuego('online');   
+    setNumJugador(numJugador);       
     console.log('jugadores:' + jugadores);
-    console.log('modo:' + modoJuego);
+    console.log('numJugador:' + numJugador);
     console.log('codigo:' + codigo);
     
     setVista('partida');
@@ -129,6 +131,7 @@ const Navbar = () => (
           modo={modoJuego}
           jugadores={jugadores}
           usuario={usuario}
+          numJugador={numJugador}
         />
       </div>
     );

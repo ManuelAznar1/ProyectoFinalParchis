@@ -3,7 +3,7 @@ import "./TableroParchis.css";
 import { posicionesIniciales, moverFichaTablero, esMiTurno, verificarMovimientosPosibles } from "./logicaParchis";
 
 
-const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambiarMensaje }, ref) => {
+const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambiarMensaje, numJugador }, ref) => {
     const [posiciones, setPosiciones] = useState(JSON.parse(JSON.stringify(posicionesIniciales)));
     const [dado, setDado] = useState(null);
     const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
@@ -85,7 +85,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
     }
 
     function seleccionarFicha(idFicha, dado) {
-        if (esMiTurno(idFicha, turnoActual)) {
+        if (esMiTurno(idFicha, turnoActual) && (numJugador == null || numJugador === turnoActual)) {
 
             setFichaSeleccionada(idFicha);
             moverFichaLocal(idFicha, dado);
