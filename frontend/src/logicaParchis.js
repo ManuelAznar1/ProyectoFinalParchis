@@ -612,11 +612,11 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
         // La ficha está en casa y el dado es 5 ⇒ puede salir a su recorrido
         if (estaFichaEnCasa(posiciones, ficha) && dado === 5) {
             
-            const indiceNuevo = 0;
-            const nuevaPos = recorridoFicha[indiceNuevo];
+            const nuevaPos = recorridoFicha[0];
 
+            let puedeMover = true;
             if (hayDosFichasMismoJugador(posiciones, nuevaPos)) {
-                return;
+                puedeMover = false;
             }            
             
             return {ficha, posicion: recorridoFicha[0], puedeMover: true};
@@ -627,11 +627,7 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
         const nuevaPosicion = avanzarCasillas(recorridoFicha, posicionActual, dado);
         const puedeMover = puedoAvanzar(posiciones, ficha, nuevaPosicion);
 
-        if (puedeMover) {
-            return {ficha, posicion: nuevaPosicion, puedeMover};
-        }
-
-        return;
+        return {ficha, posicion: nuevaPosicion, puedeMover};
     });
 
     return movimientosPosibles;

@@ -9,6 +9,8 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
     const [rolling, setRolling] = useState(false);
     const [turnoActual, setTurnoActual] = useState(1);
     const [mensaje, setMensaje] = useState('');
+    const [dadoYaTirado, setDadoYaTirado] = useState(false);
+    
     const tableroRef = useRef();
 
     const coloresJugadores = {
@@ -112,6 +114,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
 //        setDice(null);
         actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
+        setDadoYaTirado(false);
     };
 
     const sendTurno = (turno, dado) => {
@@ -136,6 +139,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
     const onMoverFicha = (ficha, dado) => {
 //        sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion);
         pasarTurno();
+        setDadoYaTirado(false);
     };
 
     const onCambiarMensaje = (nuevoMensaje) => {
@@ -157,23 +161,28 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
 
 
     const rollDice = async () => {
-        if (rolling)
-            return;
-        setRolling(true);
+        
+        if (!dadoYaTirado){        
+            if (rolling)
+                return;
+            setRolling(true);
 
-        try {
-            const res = await axios.get(import.meta.env.VITE_BACKEND_HOST + '/roll');
-            setTimeout(() => {
-                const dado = res.data.number;
+            try {
+                const res = await axios.get(import.meta.env.VITE_BACKEND_HOST + '/roll');
+                setTimeout(() => {
+                    const dado = res.data.number;
 
-                rollDiceManual(dado);
+                    rollDiceManual(dado);
 
+                    setRolling(false);
+
+                }, 500);
+            } catch (err) {
+                console.error("Error al lanzar el dado:", err);
                 setRolling(false);
-
-            }, 500);
-        } catch (err) {
-            console.error("Error al lanzar el dado:", err);
-            setRolling(false);
+            }
+        }else{
+            actualizarMensaje('No se puede tirar el dado 2 veces');
         }
     };
 
@@ -181,26 +190,31 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) 
 
         try {
 
-            setDice(dado);
+            if (!dadoYaTirado){
 
-            tableroRef.current.recibirDado(dado);
+                setDadoYaTirado(true);
+                setDice(dado);
 
-            sendTurno(turnoActual, dado);
+                tableroRef.current.recibirDado(dado);
 
-            const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(turnoActual, dado);
-            const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
-            const cantidadDeMovimientos = movimientosPosibles.length;
+                sendTurno(turnoActual, dado);
 
-            if (cantidadDeMovimientos === 0) {
-                pasarTurno(dado);
-            } else if (cantidadDeMovimientos === 1) {
-                tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
-            } else {
-                const nombresFichas = movimientosPosibles.map(m => m.ficha);
-                const nombresComoString = nombresFichas.join(', ');
-                actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
+                const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(turnoActual, dado);
+                const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
+                const cantidadDeMovimientos = movimientosPosibles.length;
+
+                if (cantidadDeMovimientos === 0) {
+                    pasarTurno(dado);
+                } else if (cantidadDeMovimientos === 1) {
+                    tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
+                } else {
+                    const nombresFichas = movimientosPosibles.map(m => m.ficha);
+                    const nombresComoString = nombresFichas.join(', ');
+                    actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
+                }
+            }else{
+                actualizarMensaje('No se puede tirar el dado 2 veces');
             }
-
 
         } catch (err) {
             console.error("Error al lanzar el dado:", err);

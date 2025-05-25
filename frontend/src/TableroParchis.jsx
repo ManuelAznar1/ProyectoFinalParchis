@@ -9,7 +9,6 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
     const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
     const [turnoActual, setTurnoActual] = useState(1);
 
-
     useImperativeHandle(ref, () => ({
         
         verificarMovimientosPosibles(turno, nuevoDado) {
@@ -107,18 +106,22 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
             return;
         }
 
-        let posicionesNuevas = moverFichaTablero(posiciones, fichaSeleccionada, dado);
+        try{
+            let posicionesNuevas = moverFichaTablero(posiciones, fichaSeleccionada, dado);
 
-        setPosiciones(posicionesNuevas);
+            setPosiciones(posicionesNuevas);
 
-        console.log('posiciones a mandar: ' + posicionesNuevas);
+            console.log('posiciones a mandar: ' + posicionesNuevas);
 
-        onCambiarPosiciones(fichaSeleccionada, posicionesNuevas);
-        
-        onMoverFicha(fichaSeleccionada, dado);        
+            onCambiarPosiciones(fichaSeleccionada, posicionesNuevas);
 
-        setDado(null);
-        setFichaSeleccionada(null);
+            onMoverFicha(fichaSeleccionada, dado);        
+
+            setDado(null);
+            setFichaSeleccionada(null);
+        } catch (e) {
+            onCambiarMensaje(e.message);
+        }
 
     }
 
