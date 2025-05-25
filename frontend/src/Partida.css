@@ -206,6 +206,7 @@ img {
   font-weight: bold;
 }
 
+
 .mensajeContenedor{
   display: block; 
   justify-content: center;
@@ -255,4 +256,11 @@ img {
   .input-container .custom-button {
     margin-top: 8px; /* separa botón del input cuando están apilados */
   }
+}
+
+
+.derecha-centro button.botonDadoDebug{
+    width: 25px;
+  padding:0px;
+  display: inline;    
 }

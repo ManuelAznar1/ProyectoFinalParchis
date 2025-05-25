@@ -77,23 +77,30 @@ io.on('connection', (socket) => {
             const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
             const partida = partidaRows[0];
 
-            const [jugadorRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE  partida_id = ?', [partida.id]);
-            const numJugadores = jugadorRow[0]?.num_jugadores;
-            
-            console.log('partida.jugadores: ' + partida.jugadores);
-            console.log('numJugadores: ' + numJugadores);
-            
-            // Ya no hay hueco
-            if (numJugadores === partida.jugadores){
-                return callback({error: 'Ya esta completa la partida'});
+            const [numMismoJugadorPartidaRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE partida_id = ? AND nickname = ?', [partida.id, usuario]);
+            const numMismoJugador = numMismoJugadorPartidaRow[0]?.num_jugadores;
+
+            // Si no existe el jugador se tiene que unir
+            if (numMismoJugador === 0) {
+                const [numJjugadorRow] = await db.execute('SELECT COUNT(id) as num_jugadores FROM jugadores WHERE  partida_id = ?', [partida.id]);
+                const numJugadores = numJjugadorRow[0]?.num_jugadores;
+
+                console.log('partida.jugadores: ' + partida.jugadores);
+                console.log('numJugadores: ' + numJugadores);
+
+                // Ya no hay hueco
+                if (numJugadores === partida.jugadores) {
+                    return callback({error: 'Ya esta completa la partida'});
+                }
+
+                const nuevoJugador = numJugadores + 1;
+
+                await db.execute(
+                        'INSERT IGNORE INTO jugadores (nickname, partida_id, color) VALUES (?, ? ,?)',
+                        [usuario, partida.id, nuevoJugador]
+                        );
+
             }
-
-            const nuevoJugador = numJugadores + 1;
-
-            await db.execute(
-                    'INSERT IGNORE INTO jugadores (nickname, partida_id, color) VALUES (?, ? ,?)',
-                    [usuario, partida.id, nuevoJugador]
-                    );
 
             socket.join(codigo);
 

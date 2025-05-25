@@ -591,3 +591,40 @@ function retrocederCasillas(recorridoTablero, posicionActual, cantidad = 1) {
     const nuevaPos = recorridoTablero[indiceNuevo];
     return nuevaPos;
 }
+
+export function verificarMovimientosPosibles(posiciones, turno, dado) {
+    // Filtra las fichas que pertenecen al jugador del turno actual
+    const fichas = Object.keys(posiciones).filter(f => f.startsWith(`ficha${turno}`));
+
+    // Opcional: para debug
+    console.log(`Fichas del jugador ${turno}:`, fichas);
+
+    const movimientosPosibles = fichas.map(ficha => {
+        const posicionActual = posiciones[ficha];
+        const recorridoFicha = dameRecorridoFicha(ficha);
+        const indiceActual = recorridoFicha.indexOf(posicionActual);
+
+        // La ficha está en casa y el dado NO es 5 ⇒ no puede moverse
+        if (estaFichaEnCasa(posiciones, ficha) && dado !== 5) {
+            return { ficha, posicion: posicionActual, puedeMover: false };
+        }
+
+        // La ficha está en casa y el dado es 5 ⇒ puede salir a su recorrido
+        if (estaFichaEnCasa(posiciones, ficha) && dado === 5) {
+            return { ficha, posicion: recorridoFicha[0], puedeMover: true };
+        }
+
+        // Si la ficha está en el recorrido, intentamos avanzar
+        const nuevaPosicion = avanzarCasillas(recorridoFicha, posicionActual, dado);
+        const puedeMover = puedoAvanzar(posiciones, ficha, nuevaPosicion);
+        
+        if (puedeMover){
+            return { ficha, posicion: nuevaPosicion, puedeMover };            
+        }
+        
+        return;
+    });
+
+    return movimientosPosibles;
+}
+

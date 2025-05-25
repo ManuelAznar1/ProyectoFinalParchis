@@ -4,26 +4,47 @@ import './App.css';
 
 function UnirsePartida( {usuario, onIniciarPartida, socket}) {
     const [codigo, setCodigo] = useState('');
+    
 
-    const joinPartida = (codigo) => {
+
+    // Función que envía un mensaje y espera la respuesta
+    function enviarMensajeSincrono(evento, datos) {
+      return new Promise((resolve, reject) => {
+        socket.emit(evento, datos, (respuesta) => {
+          // Esta función se llama cuando el servidor responde con el callback
+          resolve(respuesta);
+        });
+
+        // Opcional: timeout para rechazar si tarda mucho
+        setTimeout(() => {
+          reject(new Error("Timeout esperando respuesta del servidor"));
+        }, 5000);
+      });
+    }
+
+
+    
+    
+
+    const joinPartida = async (codigo) => {
         if (codigo.trim()) {
 
             const jugadores = 2;
             let resultCallback = '';
-            socket.emit('join', {codigo, usuario, jugadores}, (response) => {
-                if (response.error) {
-                    console.error('Error:', response.error);
-                    resultCallback=response.error;
-                } else {
-                    console.log('Éxito:', response);
-                    
-                    // TODO Aqui obtengo el numero de jugador que soy
-                    // response.numJugador
-                    // Aqui guardarlo en algun sitio
-                    // El que crea la partida tiene que guardarse que es el jugador1
-                    
-                }
-            });
+            const respuesta = await enviarMensajeSincrono('join', {codigo, usuario, jugadores});
+
+            if (respuesta.error) {
+                console.error('Error:', respuesta.error);
+                resultCallback=respuesta.error;
+            } else {
+                console.log('Éxito:', respuesta);
+
+                // TODO Aqui obtengo el numero de jugador que soy
+                // response.numJugador
+                // Aqui guardarlo en algun sitio
+                // El que crea la partida tiene que guardarse que es el jugador1
+
+            }
 
             return resultCallback;
         }
@@ -37,14 +58,17 @@ function UnirsePartida( {usuario, onIniciarPartida, socket}) {
 
         console.log('Intentando unirse a la partida con código: ' + codigo);
 
-        let result = joinPartida(codigo);
 
-        if (result === ''){
-            onIniciarPartida(codigo);
-        }else{
-            // TODO Pintar un mensaje de que no puede unirse a la partida
-            alert(result);
-        }
+        joinPartida(codigo)
+            .then(result => {
+            if (result === ''){
+                onIniciarPartida(codigo);
+            }else{
+                // TODO Pintar un mensaje de que no puede unirse a la partida
+                alert(result);
+            }
+
+        });
 
     };
 

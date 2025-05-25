@@ -616,7 +616,11 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
         // Si la ficha está en el recorrido, intentamos avanzar
         const nuevaPosicion = avanzarCasillas(recorridoFicha, posicionActual, dado);
         const puedeMover = puedoAvanzar(posiciones, ficha, nuevaPosicion);
-        return { ficha, posicion: nuevaPosicion, puedeMover };
+	    if (puedeMover){
+	        return { ficha, posicion: nuevaPosicion, puedeMover };
+		}
+
+	    return;
     });
 
     return movimientosPosibles;

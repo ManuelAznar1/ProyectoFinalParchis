@@ -4,11 +4,10 @@ import axios from 'axios';
 import Chat from './Chat';
 import TableroParchis from './TableroParchis';
 
-function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
+function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
     const [dice, setDice] = useState(null);
     const [rolling, setRolling] = useState(false);
     const [turnoActual, setTurnoActual] = useState(1);
-//    const [puedeMover, setPuedeMover] = useState(false);
     const [mensaje, setMensaje] = useState('');
     const tableroRef = useRef();
 
@@ -21,6 +20,18 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
 
     useEffect(() => {
+        
+//          setTimeout(() => {
+//                console.log('Inicializando partida...');
+//                if (tableroRef.current && codigo ==='') {
+//                    console.log('Reseteando tablero partida...');
+//
+//                    tableroRef.current.resetEstados();
+//                }        
+//          }, 0); // deja que React termine de montar        
+
+
+        
         socket.on('send turn', (msg) => {
             if (msg.partida === codigo && msg.user !== usuario?.nombre) {
                 console.log('turno remoto para mi:' + msg.turnoActual);
@@ -39,8 +50,8 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 console.log('cargando mi partida:' + msg.codigo);
                 setTurnoActual(msg.current_turn);
                 setDice(msg.dice);
-                
-                if (tableroRef.current) {      
+
+                if (tableroRef.current) {
                     const posiciones = JSON.parse(msg.posiciones);
                     tableroRef.current.cambiarPosicionesDesdeSocket(posiciones);
                 }
@@ -48,7 +59,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(msg.dice);
                 }
-                
+
                 jugadores = msg.jugadores;
             }
         });
@@ -61,11 +72,11 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 }
             }
         });
-        
+
         socket.on('send cambiar posiciones', (msg) => {
 
             if (msg.partida === codigo && msg.user !== usuario?.nombre) {
-                console.log('posiciones en remoto para mi por moviento ficha ('+msg.ficha+') : ' + msg.posiciones);
+                console.log('posiciones en remoto para mi por moviento ficha (' + msg.ficha + ') : ' + msg.posiciones);
 
                 if (tableroRef.current) {
                     tableroRef.current.cambiarPosicionesDesdeSocket(msg.posiciones);
@@ -76,7 +87,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
                 console.log('posiciones recibidas: IGNORADO');
             }
 
-        });        
+        });
 
         return () => {
             socket.off('send turn');
@@ -98,6 +109,11 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
         //const nuevoTurno = (turnoActual % jugadores) + 1;
         setTurnoActual(nuevoTurno);
+
+        if (tableroRef.current) {
+            tableroRef.current.recibirTurno(nuevoTurno);
+        }
+
 //        setDice(null);
         actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
@@ -112,29 +128,24 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
         });
     };
 
-    const sendMoverFicha = (ficha, anteriorPosicion, nuevaPosicion) => {
-        socket.emit('send mover ficha', {
-            partida: codigo,
-            user: usuario?.nombre,
-            ficha,
-            anteriorPosicion,
-            nuevaPosicion
-        });
-    };
+//    const sendMoverFicha = (ficha, anteriorPosicion, nuevaPosicion) => {
+//        socket.emit('send mover ficha', {
+//            partida: codigo,
+//            user: usuario?.nombre,
+//            ficha,
+//            anteriorPosicion,
+//            nuevaPosicion
+//        });
+//    };
 
-    const onMoverFicha = (ficha, anteriorPosicion, nuevaPosicion) => {
-        sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion);
+    const onMoverFicha = (ficha, dado) => {
+//        sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion);
         pasarTurno();
     };
 
     const onCambiarMensaje = (nuevoMensaje) => {
-        actualizarMensaje(nuevoMensaje);   
+        actualizarMensaje(nuevoMensaje);
     };
-
-    
-    const verificarMovimientosPosibles = (dado) => {
-        return true;
-    }
 
 
     function onCambiarPosiciones(fichaSeleccionada, posiciones) {
@@ -146,34 +157,21 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
         console.log('enviando cambiar posiciones -  posiciones: ' + posiciones);
 
-        socket.emit('send cambiar posiciones', { partida: codigo, user: usuarioNombre, ficha: fichaSeleccionada, posiciones });
-    }    
+        socket.emit('send cambiar posiciones', {partida: codigo, user: usuarioNombre, ficha: fichaSeleccionada, posiciones});
+    }
+
 
     const rollDice = async () => {
-        if (rolling) return;
+        if (rolling)
+            return;
         setRolling(true);
 
         try {
             const res = await axios.get(import.meta.env.VITE_BACKEND_HOST + '/roll');
             setTimeout(() => {
                 const dado = res.data.number;
-                setDice(dado);
 
-                if (tableroRef.current) {
-                    tableroRef.current.recibirDado(dado);
-                }
-
-                const hayMovimientos = verificarMovimientosPosibles(dado);
-                setPuedeMover(hayMovimientos);
-
-                sendTurno(turnoActual, dado);
-
-                if (!hayMovimientos) {
-                    pasarTurno(dado);
-                }else{
-                    // TODO Si solo se puede mover una ficha, moverla directamente
-                    // Llamando al seleccionar ficha en el tablero
-                }
+                rollDiceManual(dado);
 
                 setRolling(false);
 
@@ -184,72 +182,113 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
         }
     };
 
+    const rollDiceManual = (dado) => {
+
+        try {
+
+            setDice(dado);
+
+            tableroRef.current.recibirDado(dado);
+
+            sendTurno(turnoActual, dado);
+
+            const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(dado);
+            const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
+            const cantidadDeMovimientos = movimientosPosibles.length;
+
+            if (cantidadDeMovimientos === 0) {
+                pasarTurno(dado);
+            } else if (cantidadDeMovimientos === 1) {
+                tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
+            } else {
+                const nombresFichas = movimientosPosibles.map(m => m.ficha);
+                const nombresComoString = nombresFichas.join(', ');
+                actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
+            }
+
+
+        } catch (err) {
+            console.error("Error al lanzar el dado:", err);
+            setRolling(false);
+        }
+    };
+
     const renderMensaje = () => (
-        <div className="mensaje">
-            {mensaje}
-        </div>
-    );
+                <div className="mensaje">
+                    {mensaje}
+                </div>
+                );
 
     const mostrarInfoPartida = (
-        <h2 className="codigo-texto">
-            {modo === 'CPU' ? (
-                <>Modo: <span style={{ color: 'green' }}>VS CPU</span></>
-            ) : (
-                <>Código de Partida: <span>{codigo}</span></>
-            )}
-        </h2>
-    );
+            <h2 className="codigo-texto">
+                {modo === 'CPU' ? (
+                                    <>Modo: <span style={{color: 'green'}}>VS CPU</span></>
+                                    ) : (
+                            <>Código de Partida: <span>{codigo}</span></>
+                            )}
+            </h2>
+            );
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '30px' }}>
-                {renderMensaje()}
-            </div>
-
-            {modo === 'online' && (
-                <div>
-                    <div className="codigo-container">
-                        {mostrarInfoPartida}
-                    </div>
-                    <div className="codigo-chat-wrapper">
-                        <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre} />
-                    </div>
+            <div>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '30px'}}>
+                    {renderMensaje()}
                 </div>
-            )}
-
-            <div className="derecha-centro">
-                <div className="turno-jugador">
-                    Turno: Jugador <span style={{
-                        color: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'][turnoActual - 1],
-                        fontWeight: 'bold'
-                    }}>{turnoActual}</span>
+            
+                {modo === 'online' && (
+                            <div>
+                                <div className="codigo-container">
+                                    {mostrarInfoPartida}
+                                </div>
+                                <div className="codigo-chat-wrapper">
+                                    <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre} />
+                                </div>
+                            </div>
+                            )}
+            
+                <div className="derecha-centro">
+                    <div className="turno-jugador">
+                        Turno: Jugador <span style={{
+                                color: ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'][turnoActual - 1],
+                                fontWeight: 'bold'
+                                                 }}>{turnoActual}</span>
+                    </div>
+            
+                    <div style={{float: "right"}}>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(1)}>1</button>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(2)}>2</button>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(3)}>3</button>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(4)}>4</button>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(5)}>5</button>
+                        <button className="botonDadoDebug" onClick={() => rollDiceManual(6)}>6</button>
+            
+                    </div>                
+            
+                    <button
+                        onClick={rollDice}
+                        disabled={rolling}
+                        className={`boton-dado ${rolling ? 'rodando' : ''}`}
+                        >
+                        {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
+                    </button>
+            
+                    {dice && !rolling && (
+                            <img
+                                src={`/assets/images/dice-${dice}.png`}
+                                alt={`Dado ${dice}`}
+                                className="imagen-dado"
+                                />
+                                )}
+            
+                    <button className="custom-button" onClick={volverMenu}>
+                        Volver
+                    </button>
                 </div>
-
-                <button
-                    onClick={rollDice}
-                    disabled={rolling}
-                    className={`boton-dado ${rolling ? 'rodando' : ''}`}
-                >
-                    {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
-                </button>
-
-                {dice && !rolling && (
-                    <img
-                        src={`/assets/images/dice-${dice}.png`}
-                        alt={`Dado ${dice}`}
-                        className="imagen-dado"
-                    />
-                )}
-
-                <button className="custom-button" onClick={volverMenu}>
-                    Volver
-                </button>
+                {/* --- TABLERO --- */}
+                <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje}/>
+            
             </div>
-            {/* --- TABLERO --- */}
-            <TableroParchis ref={tableroRef} onMoverFicha={onMoverFicha} onCambiarPosiciones={onCambiarPosiciones} onCambiarMensaje={onCambiarMensaje}/>
-
-        </div>
-    );
+            );
 }
 
 export default Partida;
