@@ -207,7 +207,7 @@ img {
 }
 
 
-.mensajeContenedor{
+div.mensajeContenedor{
   display: block; 
   justify-content: center;
   align-items: center;
@@ -263,4 +263,8 @@ img {
     width: 25px;
   padding:0px;
   display: inline;    
+}
+
+.mensaje{
+  min-width: 380px;
 }

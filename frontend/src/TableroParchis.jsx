@@ -243,9 +243,9 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                 </tr>
 
                 <tr>
-                  <td id="cell-9"><span className="celda vertical left-column numero">9</span> {renderFichasEnCelda("cell-9")}</td>
-                  <td colSpan={4} rowSpan={4} id="center"><span>CENTRO</span> {renderFichasEnCelda("center")}</td>
-                  <td id="cell-59"><span className="celda vertical right-column numero">59</span> {renderFichasEnCelda("cell-59")}</td>
+                  <td id="cell-9"><span className="celda vertical left-column numero-abajo-peq">9</span> {renderFichasEnCelda("cell-9")}</td>
+                  <td colSpan={4} rowSpan={4} id="center"><span></span> {renderFichasEnCelda("center")}</td>
+                  <td id="cell-59"><span className="celda vertical right-column numero-abajo-peq-derecha">59</span> {renderFichasEnCelda("cell-59")}</td>
                 </tr>
 
                 <tr>
@@ -273,22 +273,22 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                 </tr>
 
                 <tr>
-                  <td rowSpan={2} id="cell-18"><span className="celda vertical left-column numero">18</span> {renderFichasEnCelda("cell-18")}</td>
-                  <td rowSpan={2} id="cell-19"><span className="celda vertical left-column numero">19</span> {renderFichasEnCelda("cell-19")}</td>
-                  <td rowSpan={2} id="cell-20"><span className="celda vertical left-column numero">20</span> {renderFichasEnCelda("cell-20")}</td>
-                  <td rowSpan={2} id="cell-21"><span className="celda vertical left-column numero">21</span> {renderFichasEnCelda("cell-21")}</td>
-                  <td className="azul" rowSpan={2} id="start-azul"><span className="celda vertical left-column numero">22</span> {renderFichasEnCelda("start-azul")}</td>
-                  <td rowSpan={2} id="cell-23"><span className="celda vertical left-column numero">23</span> {renderFichasEnCelda("cell-23")}</td>
-                  <td rowSpan={2} id="cell-24"><span className="celda vertical left-column numero">24</span> {renderFichasEnCelda("cell-24")}</td>
-                  <td id="cell-25"><span className="celda vertical left-column numero">25</span> {renderFichasEnCelda("cell-25")}</td>
-                  <td id="cell-43"><span className="celda vertical right-column numero">43</span> {renderFichasEnCelda("cell-43")}</td>
-                  <td rowSpan={2} id="cell-44"><span className="celda vertical right-column numero">44</span> {renderFichasEnCelda("cell-44")}</td>
-                  <td rowSpan={2} id="cell-45"><span className="celda vertical right-column numero">45</span> {renderFichasEnCelda("cell-45")}</td>
-                  <td rowSpan={2} className="seguro vertical" id="seguro-cell-46"><span className="celda vertical right-column numero">O</span> {renderFichasEnCelda("seguro-cell-46")}</td>
-                  <td rowSpan={2} id="cell-47"><span className="celda vertical right-column numero">47</span> {renderFichasEnCelda("cell-47")}</td>
-                  <td rowSpan={2} id="cell-48"><span className="celda vertical right-column numero">48</span> {renderFichasEnCelda("cell-48")}</td>
-                  <td rowSpan={2} id="cell-49"><span className="celda vertical right-column numero">49</span> {renderFichasEnCelda("cell-49")}</td>
-                  <td rowSpan={2} id="cell-50"><span className="celda vertical right-column numero">50</span> {renderFichasEnCelda("cell-50")}</td>
+                  <td rowSpan={2} id="cell-18"><span className="celda vertical left-column numero-abajo">18</span> {renderFichasEnCelda("cell-18")}</td>
+                  <td rowSpan={2} id="cell-19"><span className="celda vertical left-column numero-abajo">19</span> {renderFichasEnCelda("cell-19")}</td>
+                  <td rowSpan={2} id="cell-20"><span className="celda vertical left-column numero-abajo">20</span> {renderFichasEnCelda("cell-20")}</td>
+                  <td rowSpan={2} id="cell-21"><span className="celda vertical left-column numero-abajo">21</span> {renderFichasEnCelda("cell-21")}</td>
+                  <td className="azul" rowSpan={2} id="start-azul"><span className="celda vertical left-column numero-abajo">22</span> {renderFichasEnCelda("start-azul")}</td>
+                  <td rowSpan={2} id="cell-23"><span className="celda vertical left-column numero-abajo">23</span> {renderFichasEnCelda("cell-23")}</td>
+                  <td rowSpan={2} id="cell-24"><span className="celda vertical left-column numero-abajo">24</span> {renderFichasEnCelda("cell-24")}</td>
+                  <td id="cell-25"><span className="celda vertical left-column numero-abajo-peq">25</span> {renderFichasEnCelda("cell-25")}</td>
+                  <td id="cell-43"><span className="celda vertical right-column numero-abajo-peq-derecha ">43</span> {renderFichasEnCelda("cell-43")}</td>
+                  <td rowSpan={2} id="cell-44"><span className="celda vertical right-column numero-abajo-derecha">44</span> {renderFichasEnCelda("cell-44")}</td>
+                  <td rowSpan={2} id="cell-45"><span className="celda vertical right-column numero-abajo-derecha">45</span> {renderFichasEnCelda("cell-45")}</td>
+                  <td rowSpan={2} className="seguro vertical" id="seguro-cell-46"><span className="celda vertical right-column numero-abajo-derecha">O</span> {renderFichasEnCelda("seguro-cell-46")}</td>
+                  <td rowSpan={2} id="cell-47"><span className="celda vertical right-column numero-abajo-derecha">47</span> {renderFichasEnCelda("cell-47")}</td>
+                  <td rowSpan={2} id="cell-48"><span className="celda vertical right-column numero-abajo-derecha">48</span> {renderFichasEnCelda("cell-48")}</td>
+                  <td rowSpan={2} id="cell-49"><span className="celda vertical right-column numero-abajo-derecha">49</span> {renderFichasEnCelda("cell-49")}</td>
+                  <td rowSpan={2} id="cell-50"><span className="celda vertical right-column numero-abajo-derecha">50</span> {renderFichasEnCelda("cell-50")}</td>
                 </tr>
 
                 <tr>

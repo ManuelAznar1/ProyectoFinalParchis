@@ -13,6 +13,8 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
     const tableroRef = useRef();
 
+    const DEBUG = true;
+
     const coloresJugadores = {
         1: 'amarillo',
         2: 'verde',
@@ -239,7 +241,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
     return (
             <div>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '30px'}}>
+                <div className="mensajeContenedor" style={{display: 'flex', justifyContent: 'center'}}>
                     {renderMensaje()}
                 </div>
             
@@ -262,7 +264,8 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                                                  }}>{turnoActual}</span>
                     </div>
             
-                    <div style={{float: "right"}}>
+                {DEBUG && (            
+                    <div style={{float: "right"}} >
                         <button className="botonDadoDebug" onClick={() => rollDiceManual(1)}>1</button>
                         <button className="botonDadoDebug" onClick={() => rollDiceManual(2)}>2</button>
                         <button className="botonDadoDebug" onClick={() => rollDiceManual(3)}>3</button>
@@ -271,7 +274,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                         <button className="botonDadoDebug" onClick={() => rollDiceManual(6)}>6</button>
             
                     </div>                
-            
+                 )}           
                     <button
                         onClick={rollDice}
                         disabled={rolling}

@@ -245,22 +245,6 @@ table {
   /* Puedes agregar estilos si es necesario */
 }
 
-
-
-td.amarillo.horizontal {
-  position: relative; /* necesario para posicionar hijos absolutamente */
-}
-
-
-td.amarillo .numero {
-  position: absolute;
-  z-index: 1; /* debajo de las fichas */
-  bottom: 4px; /* o top: 4px, ajusta según necesidad */
-  left: 4px;
-  font-size: 14px;
-  color: #aaa; /* para que no distraiga demasiado */
-}
-
 .ficha {
   position: relative; /* o absolute si quieres total control */
   z-index: 2; /* por encima del número */
@@ -280,6 +264,45 @@ td.amarillo .numero {
   z-index: 1; /* debajo de las fichas */
   bottom: 4px; /* o top: 4px, ajusta según necesidad */
   left: 4px;
-  font-size: 14px;
+  font-size: 10px;
   color: #aaa; /* para que no distraiga demasiado */
+
+}
+
+.numero-abajo{
+  position: relative;
+  z-index: 1; /* debajo de las fichas */
+  bottom: -10px;
+  font-size: 10px;
+  color: #aaa; /* para que no distraiga demasiado */
+}
+
+.numero-abajo-derecha{
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: inline-block;
+  transform: rotate(180deg);  
+  position: relative;
+  z-index: 1; /* debajo de las fichas */
+  bottom: -10px;
+  font-size: 10px;
+  color: #aaa; /* para que no distraiga demasiado */
+}
+
+
+.numero-abajo-peq {
+  position: relative;
+  z-index: 1;
+  bottom: -2px;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.numero-abajo-peq-derecha {
+  transform: rotate(180deg);
+  position: relative;
+  z-index: 1;
+  bottom: -2px;
+  font-size: 10px;
+  color: #aaa;
 }
