@@ -244,7 +244,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
 
                 <tr>
                   <td id="cell-9"><span className="celda vertical left-column numero-abajo-peq">9</span> {renderFichasEnCelda("cell-9")}</td>
-                  <td colSpan={4} rowSpan={4} id="center"><span></span> {renderFichasEnCelda("center")}</td>
+                  <td colSpan={4} rowSpan={4} id="center" className="center"><span></span> {renderFichasEnCelda("center")}</td>
                   <td id="cell-59"><span className="celda vertical right-column numero-abajo-peq-derecha">59</span> {renderFichasEnCelda("cell-59")}</td>
                 </tr>
 
