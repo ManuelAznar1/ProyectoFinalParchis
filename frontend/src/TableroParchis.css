@@ -186,6 +186,31 @@ table {
   user-select: none;
 }
 
+/* Celdas verticales - fichas apiladas */
+.vertical {
+  writing-mode: vertical-lr; /* Esto ayuda con la orientación del texto */
+}
+
+/* Asegurar que las fichas se apilen verticalmente */
+.vertical .ficha {
+  margin: 2px 0;
+}
+
+.vertical.left-column .numero {
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  display: inline-block;
+}
+
+
+.celda.vertical.right-column.numero{
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: inline-block;
+  transform: rotate(180deg);  
+}
+
+
 /* Fichas de colores */
 .ficha.amarillo {
   background-color: #f4d03f;

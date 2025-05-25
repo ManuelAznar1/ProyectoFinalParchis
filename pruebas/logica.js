@@ -653,8 +653,6 @@ mostrarEstadoTablero(posiciones);
 posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
 mostrarEstadoTablero(posiciones);
 
-//posiciones = moverFichaTablero(posiciones, 'ficha21', 5);
-
 
 
 verificarMovimientosPosibles(posiciones, 2, 6).forEach(mov => {

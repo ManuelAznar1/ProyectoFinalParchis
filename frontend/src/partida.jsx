@@ -170,6 +170,9 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket }) {
 
                 if (!hayMovimientos) {
                     pasarTurno(dado);
+                }else{
+                    // TODO Si solo se puede mover una ficha, moverla directamente
+                    // Llamando al seleccionar ficha en el tablero
                 }
 
                 setRolling(false);
