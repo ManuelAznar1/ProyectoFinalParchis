@@ -22,7 +22,7 @@ services:
     build: ./backend
     container_name: backend_proyectofinal
     environment:
-      DB_HOST: db
+      DB_HOST: parchis_db
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: parchis
@@ -33,7 +33,11 @@ services:
         condition: service_healthy
         
   parchis_frontend:
-    build: ./frontend
+
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_HOST: "http://localhost:3001"    
     container_name: frontend_proyectofinal
     ports:
       - "3000:3000"
