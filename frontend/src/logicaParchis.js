@@ -495,7 +495,7 @@ function puedoAvanzar(posiciones, ficha, nuevaPosicion) {
     for (var i = 1; i <= distancia; i++) {
         const posicionIntermedia = recorridoFicha[posicionActualIndex + i];
 
-        if (hayDosFichasMismoJugador(posiciones, posicionIntermedia)) {
+        if (hayDosFichasMismoJugador(posiciones, posicionIntermedia) && nuevaPosicion !== 'center') {
             return false;
         }
     }
