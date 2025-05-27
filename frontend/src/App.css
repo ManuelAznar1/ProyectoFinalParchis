@@ -7,6 +7,16 @@
   pointer-events: none;
 }
 
+.app-root {
+  background-image: url('/assets/images/fondo.jpg'); /* Ajusta la ruta si es necesario */
+  background-size: cover;      /* Para que la imagen cubra todo el contenedor */
+  background-position: center; /* Centrar la imagen */
+  background-repeat: no-repeat;
+  min-height: 100vh;           /* Que tome toda la altura de la ventana */
+  display: flex;
+  flex-direction: column;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -304,47 +314,93 @@ body.modo-oscuro .form-box strong {
 }
 
 /* Para pantallas pequeñas (móviles) */
+/* Solo para móviles ocultar los botones normales y mostrar desplegable */
 @media (max-width: 480px) {
-  .navbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 10px 10px;
+  .desktop-buttons {
+    display: none;
   }
 
-  .nav-left, .nav-right {
-    flex: 100%;
-    justify-content: center;
-    margin: 5px 0;
+  .dropdown {
+    display: block;
+    position: relative;
   }
 
-  .nav-center {
-    position: static;
-    transform: none;
-    font-size: 20px;
-    margin: 5px 0;
-  }
-
-  .logo {
-    height: 60px;
-  }
-
-  .form-container {
-    width: 90%;
-    margin: 30px auto;
-    padding: 20px;
-  }
-
-  input, .custom-button {
-    width: 100%;
-    font-size: 14px;
-  }
-
-  .custom-button {
-    padding: 10px;
-    width: 100%;
-  }
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 24px;
+  box-sizing: content-box;
 }
 
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background-color: #00695c;
+  border-radius: 2px;
+}
+
+  .dropdown-toggle:hover {
+    background-color: #b2dfdb;
+    color: #004d40;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+    margin-top: 5px;
+    z-index: 1000;
+    width: 150px;
+  }
+
+  /* Aquí aplicamos a los botones dentro del desplegable exactamente los mismos estilos que .custom-button */
+  .dropdown-menu .custom-button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px 24px;
+    background-color: #e0f2f1;
+    color: #00695c;
+    border: 2px solid #b2dfdb;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+
+  .dropdown-menu .custom-button:hover {
+    background-color: #b2dfdb;
+    color: #004d40;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+/* En pantallas grandes ocultar el menú desplegable */
+@media (min-width: 481px) {
+  .dropdown {
+    display: none;
+  }
+
+  .desktop-buttons {
+    display: flex;
+    gap: 10px;
+  }
+}
 /* Para tablets y pantallas medianas */
 @media (max-width: 768px) {
   .navbar {

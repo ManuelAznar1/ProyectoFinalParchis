@@ -13,8 +13,8 @@ table {
 }
 
 td {
-  width: 16px;
-  height: 16px;
+  width: 1.4vw;
+  height: 1.4vw;
 }
 
 h1 {
@@ -60,7 +60,7 @@ img {
   align-items: center;
   justify-content: center;
   position: fixed;
-  right: 2rem;   /* uso unidades relativas */
+  right: 2rem; /* uso unidades relativas */
   top: 50%;
   transform: translateY(-50%);
   gap: 1rem;
@@ -82,7 +82,7 @@ img {
 }
 
 .derecha-centro button {
-  width: 100%;  /* botones ocupan todo el ancho del contenedor */
+  width: 100%; /* botones ocupan todo el ancho del contenedor */
   margin: 0.5rem 0;
   padding: 12px 24px;
   background-color: #e0f2f1;
@@ -111,7 +111,7 @@ img {
 /* Media query para pantallas pequeñas */
 @media (max-width: 900px) {
   .derecha-centro {
-    position: static;   /* ya no fijo para fluir en layout */
+    position: static; /* ya no fijo para fluir en layout */
     flex-direction: row;
     justify-content: center;
     gap: 0.5rem;
@@ -130,7 +130,7 @@ img {
 
   .derecha-centro button {
     width: auto;
-    flex: 1;  /* los botones se reparten igual el espacio */
+    flex: 1; /* los botones se reparten igual el espacio */
     margin: 0;
     font-size: 0.9rem;
     padding: 10px 12px;
@@ -155,18 +155,20 @@ img {
 }
 
 /* ESTILOS RESTANTES (totalmente originales) */
-.codigo-texto, .modo-texto {
+.codigo-texto,
+.modo-texto {
   font-size: 1.2rem;
   color: #333;
   background-color: #f8f9fa;
   padding: 8px 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
   margin: 10px auto;
 }
 
-.codigo-texto span, .modo-texto span {
+.codigo-texto span,
+.modo-texto span {
   color: #2c7be5;
   font-weight: bold;
 }
@@ -191,7 +193,8 @@ img {
   z-index: 10;
 }
 
-.codigo-partida, .modo-juego {
+.codigo-partida,
+.modo-juego {
   font-size: 1.5rem;
   color: #333;
   background-color: rgba(255, 255, 255, 0.9);
@@ -201,17 +204,17 @@ img {
   display: inline-block;
 }
 
-.codigo-partida span, .modo-juego span {
+.codigo-partida span,
+.modo-juego span {
   color: #2c7be5;
   font-weight: bold;
 }
 
-
-div.mensajeContenedor{
-  display: block; 
+div.mensajeContenedor {
+  display: block;
   justify-content: center;
   align-items: center;
-  min-height: 30px 
+  min-height: 30px;
 }
 
 .input-container {
@@ -256,15 +259,19 @@ div.mensajeContenedor{
   .input-container .custom-button {
     margin-top: 8px; /* separa botón del input cuando están apilados */
   }
+
+  td {
+    width: 12px;
+    height: 12px;
+  }
 }
 
-
-.derecha-centro button.botonDadoDebug{
-    width: 25px;
-  padding:0px;
-  display: inline;    
+.derecha-centro button.botonDadoDebug {
+  width: 25px;
+  padding: 0px;
+  display: inline;
 }
 
-.mensaje{
+.mensaje {
   min-width: 380px;
 }

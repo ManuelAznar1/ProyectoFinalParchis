@@ -5,10 +5,7 @@ import PantallaInicial from './pantallaInicial';
 import { io } from 'socket.io-client';
 
 /*
-const socket = io('/', {
-  path: '/backend/socket.io',
-  transports: ["websocket", "polling"]  // fuerza transports para evitar problemas  
-});*/
+const socket = io('http://localhost:3001');*/
 
 const socket = io(import.meta.env.VITE_BACKEND_HOST_WS, {
   path: import.meta.env.VITE_BACKEND_HOST_WS_PATH + '/socket.io',
@@ -24,11 +21,12 @@ function App() {
   const [token, setToken] = useState(null);
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(true);
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   const registrarUsuario = () => {
     const usuario = { nombre, email, contrasena };
 
-    fetch(import.meta.env.VITE_BACKEND_HOST+'/crear-usuario', {
+    fetch(import.meta.env.VITE_BACKEND_HOST + '/crear-usuario', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(usuario),
@@ -57,7 +55,7 @@ function App() {
   const iniciarSesion = () => {
     const usuario = { email, contrasena };
 
-    fetch(import.meta.env.VITE_BACKEND_HOST+'/iniciar-sesion', {
+    fetch(import.meta.env.VITE_BACKEND_HOST + '/iniciar-sesion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(usuario),
@@ -70,7 +68,6 @@ function App() {
           localStorage.setItem('usuarioNombre', data.nombre);
           localStorage.setItem('usuarioEmail', email);
           localStorage.setItem('usuarioFechaRegistro', data.fechaRegistro); // <-- aquí
-          setMensaje('Inicio de sesión exitoso');
         } else {
           setMensaje(data.error || 'Credenciales incorrectas');
         }
@@ -85,7 +82,6 @@ function App() {
   if (token) {
     return (
       <PantallaInicial
-
         onLogout={() => {
           setToken(null);
           localStorage.removeItem('usuarioNombre');
@@ -97,14 +93,13 @@ function App() {
           email: localStorage.getItem('usuarioEmail'),
           fechaRegistro: localStorage.getItem('usuarioFechaRegistro'),
         }}
-        
         socket={socket}
       />
     );
   }
 
   return (
-    <div>
+    <div className="app-root">
       <nav className="navbar">
         <div className="nav-left">
           <img src={logo} alt="Logo" className="logo" />
@@ -113,29 +108,101 @@ function App() {
           <h2>Parchis</h2>
         </div>
         <div className="nav-right">
-          <button className="custom-button" onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); }}>Registrarse</button>
-          <button className="custom-button" onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); }}>Iniciar Sesión</button>
+          {/* Botones normales para escritorio */}
+          <div className="desktop-buttons">
+            <button className="custom-button" onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); }}>Registrarse</button>
+            <button className="custom-button" onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); }}>Iniciar Sesión</button>
+          </div>
+
+          {/* Botón desplegable para móvil */}
+          <div className="dropdown">
+            <button
+              className="dropdown-toggle"
+              onClick={() => setMenuAbierto(!menuAbierto)}
+              aria-label="Menú"
+            >
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </button>
+            {menuAbierto && (
+              <div className="dropdown-menu">
+                <button
+                  className="custom-button"
+                  onClick={() => { setMostrarRegistro(true); setMostrarLogin(false); setMenuAbierto(false); }}
+                >
+                  Registrarse
+                </button>
+                <button
+                  className="custom-button"
+                  onClick={() => { setMostrarLogin(true); setMostrarRegistro(false); setMenuAbierto(false); }}
+                >
+                  Iniciar Sesión
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
       <div className="form-container">
         {mostrarRegistro && (
-          <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              registrarUsuario();
+            }}
+          >
             <h1>Registro de Usuario</h1>
-            <input type="text" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input type="password" placeholder="Contraseña" value={contrasena} onChange={(e) => setContrasena(e.target.value)} />
-            <button className="custom-button" onClick={registrarUsuario}>Registrar</button>
-          </div>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              required
+            />
+            <button className="custom-button" type="submit">Registrar</button>
+          </form>
         )}
 
         {mostrarLogin && (
-          <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              iniciarSesion();
+            }}
+          >
             <h1>Iniciar Sesión</h1>
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input type="password" placeholder="Contraseña" value={contrasena} onChange={(e) => setContrasena(e.target.value)} />
-            <button className="custom-button" onClick={iniciarSesion}>Iniciar Sesión</button>
-          </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              required
+            />
+            <button className="custom-button" type="submit">Iniciar Sesión</button>
+          </form>
         )}
 
         <p>{mensaje}</p>
@@ -145,4 +212,3 @@ function App() {
 }
 
 export default App;
-
