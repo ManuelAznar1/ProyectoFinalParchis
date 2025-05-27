@@ -10,6 +10,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
     const [turnoActual, setTurnoActual] = useState(1);
     const [mensaje, setMensaje] = useState('');
     const [dadoYaTirado, setDadoYaTirado] = useState(false);
+    const [hayGanador, setHayGanador] = useState(null);    
 
     const tableroRef = useRef();
 
@@ -26,7 +27,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
     useEffect(() => {
 
 
-        
+
         socket.on('send turn', (msg) => {
             if (msg.partida === codigo && msg.user !== usuario?.nombre) {
                 console.log('turno remoto para mi:' + msg.turnoActual);
@@ -37,10 +38,10 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(msg.dado);
                 }
-                
+
                 if (tableroRef.current) {
-                    tableroRef.current.recibirTurno(msg.turnoActual);
-                }                
+                    tableroRef.current.recibirTurno(msg.turnoActual);//, false);
+                }
             }
         });
 
@@ -81,6 +82,9 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                     tableroRef.current.cambiarPosicionesDesdeSocket(msg.posiciones);
                 }
 
+                const hayGanador = comprobarGanador(msg.posiciones);
+                setHayGanador(hayGanador);
+
             } else {
                 console.log('posiciones recibidas: IGNORADO');
             }
@@ -110,13 +114,14 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
         setTurnoActual(nuevoTurno);
 
         if (tableroRef.current) {
-            tableroRef.current.recibirTurno(nuevoTurno);
+            tableroRef.current.recibirTurno(nuevoTurno); //, false);
         }
 
 //        setDice(null);
         actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
         setDadoYaTirado(false);
+        //setDice(dado);
     };
 
     const sendTurno = (turno, dado) => {
@@ -150,8 +155,13 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
     };
 
 
-    function onCambiarPosiciones(fichaSeleccionada, posiciones) {
+    function onCambiarPosiciones(fichaSeleccionada, posiciones, hayGanador) {
+
         sendCambiarPosiciones(fichaSeleccionada, posiciones);
+
+        if (hayGanador !== null) {
+            actualizarMensaje("Ya hay ganador, el jugador: " + hayGanador);
+        }
     }
 
     function sendCambiarPosiciones(fichaSeleccionada, posiciones) {
@@ -164,64 +174,73 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
 
     const rollDice = async () => {
-        
-        if (!dadoYaTirado){        
-            if (rolling)
-                return;
-            setRolling(true);
+        if (hayGanador === null) {
 
-            try {
-                const res = await axios.get(import.meta.env.VITE_BACKEND_HOST + '/roll');
-                setTimeout(() => {
-                    const dado = res.data.number;
+            if (!dadoYaTirado && (numJugador === null || numJugador === turnoActual)) {
+                if (rolling)
+                    return;
+                setRolling(true);
 
-                    rollDiceManual(dado);
+                try {
+                    const res = await axios.get(import.meta.env.VITE_BACKEND_HOST + '/roll');
+                    setTimeout(() => {
+                        const dado = res.data.number;
 
+                        rollDiceManual(dado);
+
+                        setRolling(false);
+
+                    }, 500);
+                } catch (err) {
+                    console.error("Error al lanzar el dado:", err);
                     setRolling(false);
-
-                }, 500);
-            } catch (err) {
-                console.error("Error al lanzar el dado:", err);
-                setRolling(false);
+                }
+            } else {
+                actualizarMensaje('No se puede tirar el dado 2 veces');
             }
-        }else{
-            actualizarMensaje('No se puede tirar el dado 2 veces');
+        } else {
+            onCambiarMensaje("Ya ha habido un ganador, el jugador: " + hayGanador + " . La partida ya ha terminado");
         }
     };
 
     const rollDiceManual = (dado) => {
+        if (hayGanador === null) {
+            try {
 
-        try {
+                if (!dadoYaTirado && (numJugador === null || numJugador === turnoActual)) {
 
-            if (!dadoYaTirado){
+                    setDadoYaTirado(true);
+                    setDice(dado);
 
-                setDadoYaTirado(true);
-                setDice(dado);
+                    tableroRef.current.recibirDado(dado);
 
-                tableroRef.current.recibirDado(dado);
+                    sendTurno(turnoActual, dado);
 
-                sendTurno(turnoActual, dado);
+                    const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(turnoActual, dado);
+                    const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
+                    const cantidadDeMovimientos = movimientosPosibles.length;
 
-                const movimientosJugador = tableroRef.current.verificarMovimientosPosibles(turnoActual, dado);
-                const movimientosPosibles = movimientosJugador.filter(mov => mov.puedeMover);
-                const cantidadDeMovimientos = movimientosPosibles.length;
-
-                if (cantidadDeMovimientos === 0) {
-                    pasarTurno(dado);
-                } else if (cantidadDeMovimientos === 1) {
-                    tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
+                    if (cantidadDeMovimientos === 0) {
+                        pasarTurno(dado);
+                    } else if (cantidadDeMovimientos === 1) {
+//                        tableroRef.current.recibirTurno(turnoActual, true);                         
+                        tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
+                    } else {
+                        const nombresFichas = movimientosPosibles.map(m => m.ficha);
+                        const nombresComoString = nombresFichas.join(', ');
+                        actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
+//                        tableroRef.current.recibirTurno(turnoActual, true);                         
+                    }
                 } else {
-                    const nombresFichas = movimientosPosibles.map(m => m.ficha);
-                    const nombresComoString = nombresFichas.join(', ');
-                    actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
+                    actualizarMensaje('No se puede tirar el dado 2 veces');
                 }
-            }else{
-                actualizarMensaje('No se puede tirar el dado 2 veces');
-            }
 
-        } catch (err) {
-            console.error("Error al lanzar el dado:", err);
-            setRolling(false);
+            } catch (err) {
+                console.error("Error al lanzar el dado:", err);
+                setRolling(false);
+            }
+        } else {
+            onCambiarMensaje("Ya ha habido un ganador, el jugador: " + hayGanador + " . La partida ya ha terminado");
         }
     };
 
@@ -266,17 +285,17 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                                                  }}>{turnoActual}</span>
                     </div>
             
-                {DEBUG && (            
-                    <div style={{float: "right"}} >
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(1)}>1</button>
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(2)}>2</button>
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(3)}>3</button>
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(4)}>4</button>
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(5)}>5</button>
-                        <button className="botonDadoDebug" onClick={() => rollDiceManual(6)}>6</button>
-            
-                    </div>                
-                 )}           
+                    {DEBUG && (
+                            <div style={{float: "right"}} >
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(1)}>1</button>
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(2)}>2</button>
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(3)}>3</button>
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(4)}>4</button>
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(5)}>5</button>
+                                <button className="botonDadoDebug" onClick={() => rollDiceManual(6)}>6</button>
+                    
+                            </div>
+                                )}           
                     <button
                         onClick={rollDice}
                         disabled={rolling}

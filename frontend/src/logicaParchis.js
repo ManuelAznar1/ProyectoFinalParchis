@@ -372,7 +372,7 @@ function esFichaEnemiga(ficha1, ficha2) {
 
 
 function esCeldaSegura(posicion) {
-    return posicion.startsWith("seguro-") || posicion.startsWith("start-");
+    return posicion.startsWith("seguro-") || posicion.startsWith("start-") || posicion === "center";
 }
 
 function avanzarFicha(recorridoTablero, posiciones, ficha, nuevaPosicion) {
@@ -381,7 +381,7 @@ function avanzarFicha(recorridoTablero, posiciones, ficha, nuevaPosicion) {
     // Verificar si hay ya 2 fichas del mismo color en la nueva posición
     const mismoColor = colisiones.filter(f => !esFichaEnemiga(ficha, f));
 
-    if (mismoColor.length >= 2 || colisiones.length > 1) {
+    if (nuevaPosicion !== 'center' && (mismoColor.length >= 2 || colisiones.length > 1)) {
         const posicionAnterior = retrocederCasillas(recorridoTablero, nuevaPosicion);
         console.log(`⚠️ ${ficha} no puede entrar a ${nuevaPosicion} (2 fichas del mismo color). Retrocede a ${posicionAnterior}.`);
         moverFicha(posiciones, ficha, posicionAnterior);
@@ -604,6 +604,11 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
         const recorridoFicha = dameRecorridoFicha(ficha);
         const indiceActual = recorridoFicha.indexOf(posicionActual);
 
+        // La ficha está en el centro ⇒ no puede moverse
+        if (posicionActual === 'center') {
+            return {ficha, posicion: posicionActual, puedeMover: false};
+        }
+        
         // La ficha está en casa y el dado NO es 5 ⇒ no puede moverse
         if (estaFichaEnCasa(posiciones, ficha) && dado !== 5) {
             return {ficha, posicion: posicionActual, puedeMover: false};
@@ -619,7 +624,7 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
                 puedeMover = false;
             }            
             
-            return {ficha, posicion: recorridoFicha[0], puedeMover: true};
+            return {ficha, posicion: recorridoFicha[0], puedeMover: puedeMover};
         }
 
 
@@ -633,3 +638,22 @@ export function verificarMovimientosPosibles(posiciones, turno, dado) {
     return movimientosPosibles;
 }
 
+
+export function comprobarGanador(posiciones) {
+  for (let jugador = 1; jugador <= 4; jugador++) {
+    const fichas = [
+      `ficha${jugador}1`,
+      `ficha${jugador}2`,
+      `ficha${jugador}3`,
+      `ficha${jugador}4`
+    ];
+    
+    const todasEnCentro = fichas.every(ficha => posiciones[ficha] === "center");
+
+    if (todasEnCentro) {
+      return jugador; // Retorna el número del jugador ganador
+    }
+  }
+
+  return null; // Si no hay ganador
+}
