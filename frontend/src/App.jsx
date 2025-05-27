@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './logoParchis.png';
 import PantallaInicial from './pantallaInicial';
@@ -22,6 +22,11 @@ function App() {
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState(false);
+  
+    useEffect(() => {
+          const tokenLocalStorage = localStorage.getItem('usuarioToken');
+          setToken(tokenLocalStorage);
+    }, []);  
 
   const registrarUsuario = () => {
     const usuario = { nombre, email, contrasena };
@@ -39,6 +44,12 @@ function App() {
           localStorage.setItem('usuarioNombre', data.nombre);
           localStorage.setItem('usuarioEmail', email);
           localStorage.setItem('usuarioFechaRegistro', data.fechaRegistro); // <-- aquí
+          localStorage.setItem('usuarioToken', data.token); // <-- aquí
+          
+          setMensaje('Registro exitoso');
+          
+          setMostrarLogin(true);
+          
         } else {
           setMensaje(data.mensaje || 'Error al registrar');
         }
@@ -67,6 +78,7 @@ function App() {
           localStorage.setItem('usuarioNombre', data.nombre);
           localStorage.setItem('usuarioEmail', email);
           localStorage.setItem('usuarioFechaRegistro', data.fechaRegistro); // <-- aquí
+          localStorage.setItem('usuarioToken', data.token); // <-- aquí          
         } else {
           setMensaje(data.error || 'Credenciales incorrectas');
         }

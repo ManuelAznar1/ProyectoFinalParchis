@@ -9,12 +9,12 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
     const [rolling, setRolling] = useState(false);
     const [turnoActual, setTurnoActual] = useState(1);
     const [mensaje, setMensaje] = useState('');
-    const [dadoYaTirado, setDadoYaTirado] = useState(false);
     const [hayGanador, setHayGanador] = useState(null);
+    const [ultimoDado, setUltimoDado] = useState(1);
 
     const tableroRef = useRef();
 
-    const DEBUG = true;
+    const DEBUG = import.meta.env.DEV;
 
     const coloresJugadores = {
         1: 'amarillo',
@@ -23,6 +23,12 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
         4: 'azul'
     };
 
+    //    // Guardar el último valor de dice cuando no es null
+    //    useEffect(() => {
+    //        //if (dice !== null) {
+    //            setUltimoDado(dice);
+    //        //}
+    //    }, [dice]);
 
     useEffect(() => {
 
@@ -82,8 +88,8 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
                     tableroRef.current.cambiarPosicionesDesdeSocket(msg.posiciones);
                 }
 
-                const hayGanador = comprobarGanador(msg.posiciones);
-                setHayGanador(hayGanador);
+                const hayOtroGanador = comprobarGanador(msg.posiciones);
+                setHayGanador(hayOtroGanador);
 
             } else {
                 console.log('posiciones recibidas: IGNORADO');
@@ -117,11 +123,10 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
             tableroRef.current.recibirTurno(nuevoTurno); //, false);
         }
 
-        //        setDice(null);
+        setUltimoDado(dado);
+        setDice(null);
         actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
-        setDadoYaTirado(false);
-        //setDice(dado);
     };
 
     const sendTurno = (turno, dado) => {
@@ -146,8 +151,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
     const onMoverFicha = (ficha, dado) => {
         //        sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion);
         console.log('pasando turno, jugadores: ' + jugadores);
-        pasarTurno();
-        setDadoYaTirado(false);
+        pasarTurno(dado);
     };
 
     const onCambiarMensaje = (nuevoMensaje) => {
@@ -158,12 +162,14 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
     const colores = ['#FFC107 ', 'green', 'red', 'blue'];
 
 
-    function onCambiarPosiciones(fichaSeleccionada, posiciones, hayGanador) {
+    function onCambiarPosiciones(fichaSeleccionada, posiciones, hayGanadorFinal) {
 
         sendCambiarPosiciones(fichaSeleccionada, posiciones);
 
-        if (hayGanador !== null) {
-            actualizarMensaje("Ya hay ganador, el jugador: " + hayGanador);
+        setHayGanador(hayGanadorFinal);
+
+        if (hayGanadorFinal !== null) {
+            actualizarMensaje("Ya hay ganador, el jugador: " + hayGanadorFinal);
         }
     }
 
@@ -179,7 +185,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
     const rollDice = async () => {
         if (hayGanador === null) {
 
-            if (!dadoYaTirado && (numJugador === null || numJugador === turnoActual)) {
+            if ((numJugador === null && dice === null) || numJugador === turnoActual) {
                 if (rolling)
                     return;
                 setRolling(true);
@@ -199,7 +205,12 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
                     setRolling(false);
                 }
             } else {
-                actualizarMensaje('No se puede tirar el dado 2 veces');
+                if (numJugador === null && dice !== null) {
+                    actualizarMensaje('No se puede tirar el dado 2 veces');
+                }
+                if (numJugador !== turnoActual) {
+                    actualizarMensaje('No es tu turno');
+                }
             }
         } else {
             onCambiarMensaje("Ya ha habido un ganador, el jugador: " + hayGanador + " . La partida ya ha terminado");
@@ -210,10 +221,10 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
         if (hayGanador === null) {
             try {
 
-                if (!dadoYaTirado && (numJugador === null || numJugador === turnoActual)) {
+                if ((numJugador === null && dice === null) || numJugador === turnoActual) {
 
-                    setDadoYaTirado(true);
                     setDice(dado);
+                    setUltimoDado(dado);
 
                     tableroRef.current.recibirDado(dado);
 
@@ -235,7 +246,12 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
                         //                        tableroRef.current.recibirTurno(turnoActual, true);                         
                     }
                 } else {
-                    actualizarMensaje('No se puede tirar el dado 2 veces');
+                    if (numJugador === null && dice !== null) {
+                        actualizarMensaje('No se puede tirar el dado 2 veces');
+                    }
+                    if (numJugador !== turnoActual) {
+                        actualizarMensaje('No es tu turno');
+                    }
                 }
 
             } catch (err) {
@@ -310,10 +326,10 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
                     {rolling ? 'Rodando...' : 'Lanzar dado 🎲'}
                 </button>
 
-                {dice && !rolling && (
+                {ultimoDado !== null && !rolling && (
                     <img
-                        src={`/assets/images/dice-${dice}.png`}
-                        alt={`Dado ${dice}`}
+                        src={`/assets/images/dice-${ultimoDado}.png`}
+                        alt={`Dado ${ultimoDado}`}
                         className="imagen-dado"
                     />
                 )}

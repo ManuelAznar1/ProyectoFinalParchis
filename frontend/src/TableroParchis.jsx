@@ -9,7 +9,6 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
     const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
     const [turnoActual, setTurnoActual] = useState(1);
     const [hayGanador, setHayGanador] = useState(null);
-//    const [dadoYaTirado, setDadoYaTirado] = useState(null);
 
     useImperativeHandle(ref, () => ({
 
@@ -23,10 +22,10 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                 setFichaSeleccionada(null);
             },
 
-            recibirTurno(turnoJugador){ //, dadoYaTirado) {
+            recibirTurno(turnoJugador){
                 console.log("Recibido en TableroParchis turno:", turnoJugador);
                 setTurnoActual(turnoJugador);
-                //setDadoYaTirado(dadoYaTirado);
+                setDado(null);
             },
 
             cambiarPosicionesDesdeSocket(posicionesSocket) {
@@ -93,7 +92,6 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
 
     function seleccionarFicha(idFicha, dado) {
         if (hayGanador === null) {
-            //if (dadoYaTirado) {
                 if (esMiTurno(idFicha, turnoActual) && (numJugador == null || numJugador === turnoActual)) {
 
                     setFichaSeleccionada(idFicha);
@@ -103,9 +101,6 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                 } else {
                     onCambiarMensaje("No es tu turno para mover esta ficha");
                 }
-//            }else{
-//                onCambiarMensaje("No has tirado el dado");
-//            }
         } else {
             onCambiarMensaje("Ya ha habido un ganador, el jugador: " + hayGanador + " . La partida ya ha terminado");
         }
@@ -129,16 +124,15 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
 
             console.log('posiciones a mandar: ' + posicionesNuevas);
 
-            const hayGanador = comprobarGanador(posicionesNuevas);
-            setHayGanador(hayGanador);
+            const hayGanadorFinal = comprobarGanador(posicionesNuevas);
+            setHayGanador(hayGanadorFinal);
 
-            onCambiarPosiciones(fichaSeleccionada, posicionesNuevas, hayGanador);
+            onCambiarPosiciones(fichaSeleccionada, posicionesNuevas, hayGanadorFinal);
 
             onMoverFicha(fichaSeleccionada, dado);
 
             setDado(null);
             setFichaSeleccionada(null);
-//            setDadoYaTirado(false);
         } catch (e) {
             onCambiarMensaje(e.message);
         }
