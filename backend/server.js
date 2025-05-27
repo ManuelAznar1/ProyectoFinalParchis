@@ -136,12 +136,14 @@ io.on('connection', (socket) => {
         const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
         const partida = partidaRows[0];
 
-        const [msgs] = await db.execute(
-                'SELECT user, message, timestamp FROM mensajes WHERE partida_id = ? ORDER BY timestamp ASC',
-                [partida.id]
-                );
+        if (partidaRows.length > 0){
+            const [msgs] = await db.execute(
+                    'SELECT user, message, timestamp FROM mensajes WHERE partida_id = ? ORDER BY timestamp ASC',
+                    [partida.id]
+                    );
         
-        socket.emit('chat history', {messages: msgs, description: partida.codigo});
+            socket.emit('chat history', {messages: msgs, description: partida.codigo});
+        }
     });
 
 
