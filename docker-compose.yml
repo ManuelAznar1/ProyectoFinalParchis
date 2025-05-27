@@ -37,7 +37,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_HOST: "http://localhost:3030/backend"    
+        VITE_BACKEND_HOST: "/backend"    
         VITE_BACKEND_HOST_WS: "/"          
         VITE_BACKEND_HOST_WS_PATH: "/backend"            
     container_name: parchis_frontend
