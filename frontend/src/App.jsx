@@ -4,8 +4,17 @@ import logo from './logoParchis.png';
 import PantallaInicial from './pantallaInicial';
 import { io } from 'socket.io-client';
 
+/*
+const socket = io('/', {
+  path: '/backend/socket.io',
+  transports: ["websocket", "polling"]  // fuerza transports para evitar problemas  
+});*/
 
-const socket = io(import.meta.env.VITE_BACKEND_HOST);
+const socket = io(import.meta.env.VITE_BACKEND_HOST_WS, {
+  path: import.meta.env.VITE_BACKEND_HOST_WS_PATH + '/socket.io',
+  transports: ["websocket", "polling"]  // fuerza transports para evitar problemas  
+});
+
 
 function App() {
   const [nombre, setNombre] = useState('');

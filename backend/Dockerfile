@@ -15,6 +15,10 @@ ENV DB_PASSWORD=${DB_PASSWORD}
 ARG DB_NAME
 ENV DB_NAME=${DB_NAME}
 
+ARG DEBUG
+ENV DEBUG=${DEBUG}
+
+
 # Copiar package.json y package-lock.json (si existe)
 COPY package*.json ./
 

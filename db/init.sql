@@ -56,5 +56,8 @@ CREATE TABLE mensajes (
   FOREIGN KEY (partida_id) REFERENCES partidas(id) ON DELETE CASCADE
 );
 
-INSERT INTO `` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (1,'m','m@gmail.com','$2b$10$mOY4mRJN6iEpJHWkyZ8tdefT57DxSHWPJzfnSUC0H0LQ0Lw6axL6.','2025-05-20 15:46:29');
-INSERT INTO `` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (2,'s','s@gmail.com','$2b$10$XkxKKzLWIXhbevcoFqhDrOGo0zKFI2VAZImgkc/gtIV3jkeITi9f2','2025-05-20 15:47:05');
+
+INSERT INTO `usuarios` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (1,'j1','j1@gmail.com','$2b$10$mOY4mRJN6iEpJHWkyZ8tdefT57DxSHWPJzfnSUC0H0LQ0Lw6axL6.','2025-05-20 15:46:29');
+INSERT INTO `usuarios` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (2,'j2','j2@gmail.com','$2b$10$XkxKKzLWIXhbevcoFqhDrOGo0zKFI2VAZImgkc/gtIV3jkeITi9f2','2025-05-20 15:47:05');
+INSERT INTO `usuarios` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (3,'j3','j3@gmail.com','$2b$10$mOY4mRJN6iEpJHWkyZ8tdefT57DxSHWPJzfnSUC0H0LQ0Lw6axL6.','2025-05-20 15:46:29');
+INSERT INTO `usuarios` (`id`,`nombre`,`email`,`contrasena`,`fecha_registro`) VALUES (4,'j4','j4@gmail.com','$2b$10$XkxKKzLWIXhbevcoFqhDrOGo0zKFI2VAZImgkc/gtIV3jkeITi9f2','2025-05-20 15:47:05');
