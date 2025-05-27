@@ -103,6 +103,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
     const pasarTurno = (dado = null) => {
 
+        console.log('pasando turno, jugadores: ' + jugadores);
         const nuevoTurno = (turnoActual === jugadores) ? 1 : (turnoActual + 1);
 
         //const nuevoTurno = (turnoActual % jugadores) + 1;
@@ -139,6 +140,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
     const onMoverFicha = (ficha, dado) => {
 //        sendMoverFicha(ficha, anteriorPosicion, nuevaPosicion);
+        console.log('pasando turno, jugadores: ' + jugadores);
         pasarTurno();
         setDadoYaTirado(false);
     };

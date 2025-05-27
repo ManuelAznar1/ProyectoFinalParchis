@@ -38,7 +38,8 @@ function PantallaInicial({ onLogout, usuario, socket }) {
   const handleIniciarPartida = (codigo, jugadores) => {
     setCodigoPartida(codigo);
     setJugadores(jugadores);
-    console.log('jugadores:' + jugadores);
+    setNumJugador(null);     
+    console.log('jugadores partida local:' + jugadores);
 
     setVista('partida');
   };
@@ -48,7 +49,7 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     setJugadores(jugadores);
     setModoJuego('online');   
     setNumJugador(numJugador);       
-    console.log('jugadores:' + jugadores);
+    console.log('jugadores partida online:' + jugadores);
     console.log('numJugador:' + numJugador);
     console.log('codigo:' + codigo);
     

@@ -29,7 +29,7 @@ function UnirsePartida( {usuario, onIniciarPartida, socket}) {
     const joinPartida = async (codigo) => {
         if (codigo.trim()) {
 
-            const jugadores = 2;
+            const jugadores = -1; // -1 indica que no se ha especificado el número de jugadores
             let resultCallback = '';
             const respuesta = await enviarMensajeSincrono('join', {codigo, usuario, jugadores});
 
@@ -68,7 +68,7 @@ function UnirsePartida( {usuario, onIniciarPartida, socket}) {
             } else {
                 console.log('Éxito:', respuesta);
 
-                onIniciarPartida(codigo, null, respuesta.numJugador);
+                onIniciarPartida(codigo, respuesta.jugadores, respuesta.numJugador);
 
             }                
 

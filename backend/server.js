@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
 
             sendPartida(io, partida.codigo);
 
-            callback({success: true, numJugador: nuevoJugador, messages: msgs});
+            callback({success: true, numJugador: nuevoJugador, jugadores: partida.jugadores, messages: msgs});
         } catch (err) {
             console.error(err);
             callback({error: 'Error interno del servidor'});
@@ -136,12 +136,14 @@ io.on('connection', (socket) => {
         const [partidaRows] = await db.execute('SELECT id, codigo, jugadores FROM partidas WHERE codigo = ?', [codigo]);
         const partida = partidaRows[0];
 
-        const [msgs] = await db.execute(
-                'SELECT user, message, timestamp FROM mensajes WHERE partida_id = ? ORDER BY timestamp ASC',
-                [partida.id]
-                );
+        if (partidaRows.length > 0){
+            const [msgs] = await db.execute(
+                    'SELECT user, message, timestamp FROM mensajes WHERE partida_id = ? ORDER BY timestamp ASC',
+                    [partida.id]
+                    );
         
-        socket.emit('chat history', {messages: msgs, description: partida.codigo});
+            socket.emit('chat history', {messages: msgs, description: partida.codigo});
+        }
     });
 
 
