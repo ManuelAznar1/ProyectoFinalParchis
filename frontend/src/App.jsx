@@ -39,7 +39,6 @@ function App() {
           localStorage.setItem('usuarioNombre', data.nombre);
           localStorage.setItem('usuarioEmail', email);
           localStorage.setItem('usuarioFechaRegistro', data.fechaRegistro); // <-- aquí
-          setMensaje('Registro exitoso');
         } else {
           setMensaje(data.mensaje || 'Error al registrar');
         }
