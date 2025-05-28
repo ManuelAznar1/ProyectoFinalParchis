@@ -65,7 +65,7 @@ function Chat( { socket, codigo, usuario }) {
 
 
     return (
-            <div style={{maxWidth: 600, margin: 'auto', padding: 20, float: 'left'}}>
+            <div className="movil" style={{maxWidth: 600, margin: 'auto', padding: 20, float: 'left'}}>
                 <div
                     style={{
                     height: 300,

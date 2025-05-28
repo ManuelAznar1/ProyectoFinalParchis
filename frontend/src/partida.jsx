@@ -3,6 +3,7 @@ import './Partida.css';
 import axios from 'axios';
 import Chat from './Chat';
 import TableroParchis from './TableroParchis';
+import { comprobarGanador } from "./logicaParchis";
 
 function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, numJugador }) {
     const [dice, setDice] = useState(null);
@@ -125,7 +126,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
 
         setUltimoDado(dado);
         setDice(null);
-        actualizarMensaje("Nuevo turno: " + nuevoTurno);
+        //actualizarMensaje("Nuevo turno: " + nuevoTurno);
         sendTurno(nuevoTurno, dado);
     };
 
@@ -286,10 +287,14 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
             </div>
 
             {modo === 'online' && (
-                <div>
                     <div className="codigo-container">
                         {mostrarInfoPartida}
                     </div>
+            )}
+
+
+            {modo === 'online' && (
+                <div>
                     <div className="codigo-chat-wrapper">
                         <Chat socket={socket} codigo={codigo} usuario={usuario?.nombre} />
                     </div>

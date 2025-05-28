@@ -266,6 +266,21 @@ div.mensajeContenedor {
   }
 }
 
+@media (max-width: 1024px) {
+  .movil {
+    display: none;
+  }
+
+  .codigo-container {
+    position:relative;
+    top: 10px; /* manteniendo el valor original */
+    left: 20px;
+    transform: none;
+    width: auto;
+    justify-content: flex-start;
+  }
+}
+
 .derecha-centro button.botonDadoDebug {
   width: 25px;
   padding: 0px;

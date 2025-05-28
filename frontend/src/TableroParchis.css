@@ -17,6 +17,7 @@
   .tablero {
     max-width: 95vw;
   }
+  
 }
 
 .codigo-chat-wrapper {
@@ -75,11 +76,6 @@
   .codigo-chat-wrapper {
     max-width: 95vw;
   }
-}
-
-/* Evita el uso de !important para márgenes */
-table {
-  margin: 35px auto 0 auto;
 }
 
 /* Casillas base */

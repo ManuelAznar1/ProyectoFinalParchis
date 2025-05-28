@@ -33,10 +33,10 @@ function CrearPartida( { modo, onIniciarPartida, usuario, socket }) {
 
             joinPartida(nuevoCodigo);
 
-            onIniciarPartida(nuevoCodigo, jugadores, 1);
+            onIniciarPartida(nuevoCodigo, jugadores, 1, modo);
 
         } else {
-            onIniciarPartida(null, jugadores, null);
+            onIniciarPartida(null, jugadores, null, modo);
         }
     };
 

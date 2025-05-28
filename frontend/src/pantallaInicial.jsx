@@ -35,13 +35,18 @@ function PantallaInicial({ onLogout, usuario, socket }) {
     setVista('menu');
   };
 
-  const handleIniciarPartida = (codigo, jugadores) => {
-    setCodigoPartida(codigo);
-    setJugadores(jugadores);
-    setNumJugador(null);     
-    console.log('jugadores partida local:' + jugadores);
+  const handleIniciarPartida = (codigo, jugadores, numJugador, modo) => {
+    if (modo === 'online') {
+      handleIniciarPartidaOnline(codigo, jugadores, numJugador);
+    }else {
+      setCodigoPartida(codigo);
+      setJugadores(jugadores);
+      setNumJugador(null);     
+      console.log('jugadores partida local:' + jugadores);
 
-    setVista('partida');
+      setVista('partida');
+      
+    }
   };
 
   const handleIniciarPartidaOnline = (codigo, jugadores, numJugador) => {

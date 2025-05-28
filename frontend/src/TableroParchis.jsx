@@ -298,7 +298,7 @@ const TableroParchis = forwardRef(({ onMoverFicha, onCambiarPosiciones, onCambia
                         <td id="cell-43"><span className="celda vertical right-column numero-abajo-peq-derecha ">43</span> {renderFichasEnCelda("cell-43")}</td>
                         <td rowSpan={2} id="cell-44"><span className="celda vertical right-column numero-abajo-derecha">44</span> {renderFichasEnCelda("cell-44")}</td>
                         <td rowSpan={2} id="cell-45"><span className="celda vertical right-column numero-abajo-derecha">45</span> {renderFichasEnCelda("cell-45")}</td>
-                        <td rowSpan={2} className="seguro vertical" id="seguro-cell-46"><span className="celda vertical right-column numero-abajo-derecha">O</span> {renderFichasEnCelda("seguro-cell-46")}</td>
+                        <td rowSpan={2} className="seguro" id="seguro-cell-46"><span className="celda vertical right-column numero-abajo-derecha">O</span> {renderFichasEnCelda("seguro-cell-46")}</td>
                         <td rowSpan={2} id="cell-47"><span className="celda vertical right-column numero-abajo-derecha">47</span> {renderFichasEnCelda("cell-47")}</td>
                         <td rowSpan={2} id="cell-48"><span className="celda vertical right-column numero-abajo-derecha">48</span> {renderFichasEnCelda("cell-48")}</td>
                         <td rowSpan={2} id="cell-49"><span className="celda vertical right-column numero-abajo-derecha">49</span> {renderFichasEnCelda("cell-49")}</td>
