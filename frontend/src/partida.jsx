@@ -241,7 +241,7 @@ function Partida({ volverMenu, codigo, usuario, modo, jugadores = 2, socket, num
                         tableroRef.current.seleccionarFichaPartida(movimientosPosibles[0].ficha, dado);
                     } else {
                         const nombresFichas = movimientosPosibles.map(m => m.ficha);
-                        const nombresComoString = nombresFichasmap(nombre => nombre.charAt(6)).join(', ');
+                        const nombresComoString = nombresFichas.map(nombre => nombre.charAt(6)).join(', ');
                         actualizarMensaje('Elige que ficha quieres mover: ' + nombresComoString);
                         //                        tableroRef.current.recibirTurno(turnoActual, true);                         
                     }
