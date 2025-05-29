@@ -353,6 +353,11 @@ app.post('/cambiar-contrasena', async (req, res) => {
             return res.status(404).json({exito: false, mensaje: 'Usuario no encontrado'});
         }
 
+        if (contraseñaActual === nuevaContraseña) {
+            return res.status(400).json({exito: false, mensaje: 'La nueva contraseña no puede ser igual a la actual'});
+        }
+
+
         const usuarioDB = rows[0];
         const esCorrecta = await bcrypt.compare(contraseñaActual, usuarioDB.contrasena);
 
