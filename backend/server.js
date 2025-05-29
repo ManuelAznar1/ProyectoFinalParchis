@@ -121,7 +121,7 @@ io.on('connection', (socket) => {
 
             sendRoomList(io);
 
-            sendPartida(io, partida.codigo);
+            sendPartidaPosiciones(io, partida.codigo);
 
             callback({success: true, numJugador: nuevoJugador, jugadores: partida.jugadores, messages: msgs});
         } catch (err) {
@@ -242,6 +242,10 @@ io.on('connection', (socket) => {
 
         io.to(partida).emit('send cambiar posiciones', {partida, user, ficha, posiciones, timestamp});
     });
+    
+    socket.on('send partida posiciones', async ({ codigo }) => {
+        sendPartidaPosiciones(io, codigo);
+    });
 
 });
 
@@ -253,8 +257,8 @@ async function sendRoomList(target) {
 }
 
 
-async function sendPartida(target, partida) {
-    const [partidaRow] = await db.execute('SELECT id, codigo, status, current_turn, creada_en, dice, posiciones, jugadores FROM partidas WHERE codigo = ?', [partida]);
+async function sendPartidaPosiciones(target, codigo) {
+    const [partidaRow] = await db.execute('SELECT id, codigo, status, current_turn, creada_en, dice, posiciones, jugadores FROM partidas WHERE codigo = ?', [codigo]);
     target.emit('send partida', partidaRow[0]);
 }
 
