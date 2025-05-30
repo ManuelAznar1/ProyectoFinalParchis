@@ -43,7 +43,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
                 console.log('turno remoto para mi:' + msg.turnoActual);
                 setTurnoActual(msg.turnoActual);
                 setDice(msg.dado);
-                actualizarMensaje('Turno de: ' + msg.turnoActual);
+                actualizarMensaje(""); //'Turno de: ' + msg.turnoActual);
 
                 if (tableroRef.current) {
                     tableroRef.current.recibirDado(msg.dado);
