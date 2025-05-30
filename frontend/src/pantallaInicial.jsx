@@ -162,7 +162,6 @@ const Navbar = () => (
           <button className="custom-button" onClick={() => setVista('cambiarContraseña')}>
             Cambiar Contraseña
           </button>
-          <button className="custom-button">Idioma</button>
           <button className="custom-button" onClick={toggleModoOscuro}>
             {modoOscuro ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
           </button>
@@ -173,7 +172,7 @@ const Navbar = () => (
   }
 
   return (
-    <div>
+    <div className='app-root'>
       <Navbar />
       <div className="form-container">
         <h1>Menú Principal</h1>
