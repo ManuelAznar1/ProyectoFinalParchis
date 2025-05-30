@@ -1,4 +1,5 @@
-DATE =$(date +%Y-%m-%d_%H-%M-%S)
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+
 # Create a backup directory with the current date
 mkdir -p /parchis_backups/$DATE
 
