@@ -133,7 +133,7 @@ function Partida( { volverMenu, codigo, usuario, modo, jugadores = 2, socket, nu
 
         setUltimoDado(dado);
         setDice(null);
-        //actualizarMensaje("Nuevo turno: " + nuevoTurno);
+        actualizarMensaje("");
         sendTurno(nuevoTurno, dado);
     };
 
